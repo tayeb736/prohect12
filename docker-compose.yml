@@ -1,0 +1,62 @@
+# =====================================================
+# MediShop Pro — Docker Compose
+# تشغيل المشروع كاملاً بأمر واحد: docker-compose up
+# =====================================================
+
+version: '3.8'
+
+services:
+
+  # ─────────────── Backend (NestJS) ───────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: medishop_backend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: file:./dev.db
+      JWT_SECRET: medishop_jwt_secret_change_in_production
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_SECRET: medishop_refresh_secret_change_in_production
+      JWT_REFRESH_EXPIRES_IN: 7d
+      FRONTEND_URL: http://localhost:5173
+      PORT: 3000
+    volumes:
+      # Persist the SQLite database file
+      - sqlite_data:/app/prisma
+    networks:
+      - medishop_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/v1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─────────────── Frontend (React + Vite → Nginx) ───────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3000/api/v1
+    container_name: medishop_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - medishop_network
+    restart: unless-stopped
+
+# ─────────────── Volumes ───────────────
+volumes:
+  sqlite_data:
+
+# ─────────────── Networks ───────────────
+networks:
+  medishop_network:
+    driver: bridge

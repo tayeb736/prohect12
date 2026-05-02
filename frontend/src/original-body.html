@@ -1,0 +1,345 @@
+<!-- LOADER -->
+    <div class="loader-screen" id="loaderScreen">
+        <div class="loader-logo"><i class="fas fa-heartbeat"></i> MediShop Pro</div>
+        <div class="loader-bar"><div class="loader-bar__fill"></div></div>
+        <div class="loader-text">Loading premium medical equipment...</div>
+    </div>
+
+    <!-- SCROLL PROGRESS -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- ========== SIDE NAVIGATION (Slide on Hover - Desktop Only) ========== -->
+    <aside class="side-nav" id="sideNav">
+        <div class="side-nav__overlay" id="sideNavOverlay"></div>
+        
+        <!-- Trigger Tab -->
+        <div class="side-nav__trigger" id="sideNavTrigger">
+            <div class="side-nav__trigger-pulse"></div>
+            <span class="side-nav__trigger-icon"><i class="fas fa-chevron-right"></i> CATEGORIES</span>
+        </div>
+
+        <!-- Close Button -->
+        <div class="side-nav__close" id="sideNavClose"><i class="fas fa-times"></i></div>
+
+        <!-- Header -->
+        <div class="side-nav__header">
+            <i class="fas fa-heartbeat"></i>
+            <div class="side-nav__header-text">
+                <h3>MediShop Pro</h3>
+                <p>Your Medical Equipment Partner</p>
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="side-nav__body">
+            <!-- Quick Actions -->
+            <div class="side-nav__quick-actions">
+                <div class="side-nav__quick-action" onclick="window.location.href='#offers'">
+                    <i class="fas fa-fire"></i>
+                    <span>Flash Deals</span>
+                </div>
+                <div class="side-nav__quick-action" onclick="document.getElementById('cartToggle').click()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>My Cart</span>
+                </div>
+                <div class="side-nav__quick-action">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </div>
+                <div class="side-nav__quick-action">
+                    <i class="fas fa-truck"></i>
+                    <span>Track Order</span>
+                </div>
+            </div>
+
+            <!-- Main Categories -->
+            <div class="side-nav__section">
+                <div class="side-nav__section-title">Main Categories</div>
+                <div class="side-nav__item active" data-cat="all" onclick="filterCategory(this, 'all')">
+                    <div class="side-nav__item-icon"><i class="fas fa-th-large"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">All Products</div><div class="side-nav__item-count">200 products</div></div>
+                </div>
+                <div class="side-nav__item" data-cat="Diagnostics" onclick="toggleSub(this)">
+                    <div class="side-nav__item-icon"><i class="fas fa-stethoscope"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Diagnostics</div><div class="side-nav__item-count">28 products</div></div>
+                    <span class="side-nav__item-badge">12% OFF</span>
+                    <i class="fas fa-chevron-down side-nav__item-arrow"></i>
+                </div>
+                <div class="side-nav__sub" id="sub-diagnostics">
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Diagnostics'); closeSideNav();">Blood Pressure Monitors</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Diagnostics'); closeSideNav();">Stethoscopes</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Diagnostics'); closeSideNav();">Pulse Oximeters</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Diagnostics'); closeSideNav();">ECG Machines</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Diagnostics'); closeSideNav();">Thermometers</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Diagnostics'); closeSideNav();">Glucometers</div>
+                </div>
+
+                <div class="side-nav__item" data-cat="Surgical" onclick="toggleSub(this)">
+                    <div class="side-nav__item-icon"><i class="fas fa-scalpel-line-dashed"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Surgical Instruments</div><div class="side-nav__item-count">32 products</div></div>
+                    <span class="side-nav__item-badge side-nav__item-badge--hot">HOT</span>
+                    <i class="fas fa-chevron-down side-nav__item-arrow"></i>
+                </div>
+                <div class="side-nav__sub" id="sub-surgical">
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Surgical'); closeSideNav();">Scalpels & Blades</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Surgical'); closeSideNav();">Forceps & Clamps</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Surgical'); closeSideNav();">Surgical Scissors</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Surgical'); closeSideNav();">Suture Kits</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Surgical'); closeSideNav();">Surgical Gowns</div>
+                </div>
+
+                <div class="side-nav__item" data-cat="Respiratory" onclick="toggleSub(this)">
+                    <div class="side-nav__item-icon"><i class="fas fa-lungs"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Respiratory</div><div class="side-nav__item-count">12 products</div></div>
+                    <i class="fas fa-chevron-down side-nav__item-arrow"></i>
+                </div>
+                <div class="side-nav__sub" id="sub-respiratory">
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Respiratory'); closeSideNav();">Oxygen Concentrators</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Respiratory'); closeSideNav();">Nebulizers</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Respiratory'); closeSideNav();">CPAP Machines</div>
+                    <div class="side-nav__sub-item" onclick="filterCategory(this, 'Respiratory'); closeSideNav();">Spirometers</div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Lab'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-flask"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Laboratory</div><div class="side-nav__item-count">18 products</div></div>
+                    <span class="side-nav__item-badge side-nav__item-badge--new">NEW</span>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Mobility'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-wheelchair"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Mobility</div><div class="side-nav__item-count">10 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Rehab'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-person-walking"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Rehabilitation</div><div class="side-nav__item-count">16 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Dental'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-tooth"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Dental</div><div class="side-nav__item-count">14 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Emergency'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-kit-medical"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Emergency</div><div class="side-nav__item-count">10 products</div></div>
+                    <span class="side-nav__item-badge">5 OFF</span>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Imaging'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-x-ray"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Imaging</div><div class="side-nav__item-count">5 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Furniture'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-bed"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Hospital Furniture</div><div class="side-nav__item-count">16 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Disposables'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-box-tissue"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Disposables</div><div class="side-nav__item-count">24 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Testing'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-vials"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Testing Kits</div><div class="side-nav__item-count">4 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Storage'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-snowflake"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Cold Storage</div><div class="side-nav__item-count">2 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Sterilization'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-shield-virus"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Sterilization</div><div class="side-nav__item-count">2 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Hygiene'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-hands-bubbles"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Hygiene</div><div class="side-nav__item-count">3 products</div></div>
+                </div>
+
+                <div class="side-nav__item" onclick="filterCategory(this, 'Neonatal'); closeSideNav();">
+                    <div class="side-nav__item-icon"><i class="fas fa-baby"></i></div>
+                    <div class="side-nav__item-text"><div class="side-nav__item-name">Neonatal</div><div class="side-nav__item-count">1 product</div></div>
+                    <span class="side-nav__item-badge side-nav__item-badge--new">NEW</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="side-nav__footer">
+            <div class="side-nav__footer-promo">
+                <div class="side-nav__footer-promo-icon">🎁</div>
+                <div class="side-nav__footer-promo-text">Get 10% OFF your first order!</div>
+                <div class="side-nav__footer-promo-code" onclick="copyPromo()" title="Click to copy">MEDISHOP10</div>
+            </div>
+            <div class="side-nav__footer-contact">
+                <div class="side-nav__footer-contact-item"><i class="fas fa-phone"></i> +213 555 123 456</div>
+                <div class="side-nav__footer-contact-item"><i class="fas fa-envelope"></i> contact@medishop-pro.dz</div>
+                <div class="side-nav__footer-contact-item"><i class="fas fa-clock"></i> Mon-Fri: 8AM-7PM</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="header__top" id="headerTop">
+            <span><i class="fas fa-truck-medical"></i> Free shipping across Algeria on orders over 20,000 DZD | CE Certified | ISO 13485 Quality</span>
+            <button class="header__top-close" onclick="this.parentElement.style.display='none'" aria-label="Close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="container">
+            <div class="header__main">
+                <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                    <span class="hamburger__line"></span><span class="hamburger__line"></span><span class="hamburger__line"></span>
+                </button>
+                <a href="#" class="header__logo">
+                    <i class="fas fa-heartbeat"></i>
+                    MediShop<span>Pro</span>
+                </a>
+                <div class="search">
+                    <input type="text" class="search__input" id="searchInput" placeholder="Search 200+ medical products..." aria-label="Search">
+                    <button class="search__btn" aria-label="Search"><i class="fas fa-search"></i></button>
+                    <div class="search__suggestions" id="searchSuggestions"></div>
+                </div>
+                <div class="header__actions">
+                    <button class="header__action-btn" aria-label="Compare" id="compareToggle"><i class="fas fa-balance-scale"></i></button>
+                    <button class="header__action-btn" aria-label="Wishlist"><i class="far fa-heart"></i><span class="header__badge" id="wishlistBadge" style="background:var(--accent)">0</span></button>
+                    <button class="header__action-btn" id="cartToggle" aria-label="Cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="header__badge" id="cartBadge">0</span>
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+                </div>
+            </div>
+        </div>
+        <nav class="nav" id="mainNav">
+            <div class="container">
+                <ul class="nav__list">
+                    <li><a href="#" class="nav__link active" id="megaTrigger"><span>All Categories</span></a></li>
+                    <li><a href="#offers" class="nav__link"><span>Flash Deals</span><span class="nav__link__hot"></span></a></li>
+                    <li><a href="#" class="nav__link"><span>Brands</span></a></li>
+                    <li><a href="#" class="nav__link"><span>New Arrivals</span><span class="nav__link__hot"></span></a></li>
+                    <li><a href="#" class="nav__link"><span>Best Sellers</span></a></li>
+                    <li><a href="#" class="nav__link"><span>Support 24/7</span></a></li>
+                </ul>
+            </div>
+            <div class="mega-menu" id="megaMenu">
+                <div class="mega-menu__grid">
+                    <div class="mega-menu__col"><h4><i class="fas fa-stethoscope"></i> Diagnostics</h4><a href="#">Blood Pressure Monitors</a><a href="#">Stethoscopes</a><a href="#">Pulse Oximeters</a><a href="#">ECG Machines</a><a href="#">Thermometers</a><a href="#">Glucometers</a></div>
+                    <div class="mega-menu__col"><h4><i class="fas fa-scalpel-line-dashed"></i> Surgical</h4><a href="#">Scalpels & Blades</a><a href="#">Forceps & Clamps</a><a href="#">Surgical Scissors</a><a href="#">Suture Kits</a><a href="#">Surgical Gowns</a><a href="#">Surgical Lights</a></div>
+                    <div class="mega-menu__col"><h4><i class="fas fa-lungs"></i> Respiratory</h4><a href="#">Oxygen Concentrators</a><a href="#">Nebulizers</a><a href="#">CPAP Machines</a><a href="#">Spirometers</a><a href="#">Ventilators</a><a href="#">Peak Flow Meters</a></div>
+                    <div class="mega-menu__col"><h4><i class="fas fa-flask"></i> Laboratory</h4><a href="#">Centrifuges</a><a href="#">Microscopes</a><a href="#">Hematology Analyzers</a><a href="#">pH Meters</a><a href="#">Lab Consumables</a><a href="#">Water Baths</a></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- MARQUEE -->
+    <div class="marquee-bar">
+        <div class="marquee-content">
+            <span class="marquee-item"><i class="fas fa-shield-virus"></i> CE Certified Products</span>
+            <span class="marquee-item"><i class="fas fa-truck"></i> Fast Delivery – 48 Wilayas</span>
+            <span class="marquee-item"><i class="fas fa-undo"></i> 30-Day Free Returns</span>
+            <span class="marquee-item"><i class="fas fa-headset"></i> 24/7 Professional Support</span>
+            <span class="marquee-item"><i class="fas fa-medal"></i> ISO 13485 Quality</span>
+            <span class="marquee-item"><i class="fas fa-lock"></i> Secure Payment</span>
+            <span class="marquee-item"><i class="fas fa-hospital"></i> Trusted by 5,000+ Hospitals</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> #1 Medical Supplier in Algeria</span>
+            <span class="marquee-item"><i class="fas fa-certificate"></i> FDA Approved Equipment</span>
+            <span class="marquee-item"><i class="fas fa-hand-holding-usd"></i> Bulk Discounts Available</span>
+            <span class="marquee-item"><i class="fas fa-shield-virus"></i> CE Certified Products</span>
+            <span class="marquee-item"><i class="fas fa-truck"></i> Fast Delivery – 48 Wilayas</span>
+            <span class="marquee-item"><i class="fas fa-undo"></i> 30-Day Free Returns</span>
+            <span class="marquee-item"><i class="fas fa-headset"></i> 24/7 Professional Support</span>
+            <span class="marquee-item"><i class="fas fa-medal"></i> ISO 13485 Quality</span>
+            <span class="marquee-item"><i class="fas fa-lock"></i> Secure Payment</span>
+            <span class="marquee-item"><i class="fas fa-hospital"></i> Trusted by 5,000+ Hospitals</span>
+            <span class="marquee-item"><i class="fas fa-star"></i> #1 Medical Supplier in Algeria</span>
+            <span class="marquee-item"><i class="fas fa-certificate"></i> FDA Approved Equipment</span>
+            <span class="marquee-item"><i class="fas fa-hand-holding-usd"></i> Bulk Discounts Available</span>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero container" id="heroCarousel">
+        <div class="hero__blob hero__blob--1"></div>
+        <div class="hero__blob hero__blob--2"></div>
+        <div class="hero__slides" id="heroSlides">
+            <div class="hero__slide"><div class="hero__content"><span class="hero__badge"><i class="fas fa-bolt"></i> Special Offer</span><h2 class="hero__title">Bluetooth Blood Pressure Monitors</h2><p class="hero__text">Medical-grade precision with wireless connectivity. Up to 30% off on premium blood pressure monitors.</p><a href="#products" class="hero__cta">Discover Now <i class="fas fa-arrow-right"></i></a></div></div>
+            <div class="hero__slide"><div class="hero__content"><span class="hero__badge"><i class="fas fa-shield-virus"></i> Maximum Protection</span><h2 class="hero__title">Personal Protective Equipment</h2><p class="hero__text">Gloves, masks, gowns & shoe covers compliant with hospital standards. In-stock for fast delivery.</p><a href="#products" class="hero__cta">Shop PPE <i class="fas fa-arrow-right"></i></a></div></div>
+            <div class="hero__slide"><div class="hero__content"><span class="hero__badge"><i class="fas fa-microscope"></i> Advanced Diagnostics</span><h2 class="hero__title">Precision Diagnostic Equipment</h2><p class="hero__text">Stethoscopes, otoscopes, portable ultrasounds & pulse oximeters. Reliable tools for accurate diagnostics.</p><a href="#products" class="hero__cta">Explore Diagnostics <i class="fas fa-arrow-right"></i></a></div></div>
+            <div class="hero__slide"><div class="hero__content"><span class="hero__badge"><i class="fas fa-fire"></i> Mega Sale</span><h2 class="hero__title">Flash Deals on Surgical Instruments</h2><p class="hero__text">Premium stainless steel surgical tools at unbeatable prices. Limited stock – order now!</p><a href="#offers" class="hero__cta">View Deals <i class="fas fa-arrow-right"></i></a></div></div>
+            <div class="hero__slide"><div class="hero__content"><span class="hero__badge"><i class="fas fa-gem"></i> Premium Quality</span><h2 class="hero__title">Lab & Diagnostic Analyzers</h2><p class="hero__text">Professional hematology, chemistry & immunoassay analyzers. Trusted by top laboratories in Algeria.</p><a href="#products" class="hero__cta">Shop Lab Equipment <i class="fas fa-arrow-right"></i></a></div></div>
+        </div>
+        <button class="hero__arrow hero__arrow--prev" id="heroPrev" aria-label="Previous"><i class="fas fa-chevron-left"></i></button>
+        <button class="hero__arrow hero__arrow--next" id="heroNext" aria-label="Next"><i class="fas fa-chevron-right"></i></button>
+        <div class="hero__dots" id="heroDots"></div>
+        <div class="hero__progress" id="heroProgress"></div>
+    </section>
+
+    <!-- TRUST BAR -->
+    <section class="trust-bar"><div class="container"><div class="trust-grid"><div class="trust-item"><div class="trust-item__icon"><i class="fas fa-truck-fast"></i></div><div class="trust-item__text">Free Delivery over 20K DZD</div></div><div class="trust-item"><div class="trust-item__icon"><i class="fas fa-shield-halved"></i></div><div class="trust-item__text">CE Certified Equipment</div></div><div class="trust-item"><div class="trust-item__icon"><i class="fas fa-rotate-left"></i></div><div class="trust-item__text">30-Day Returns</div></div><div class="trust-item"><div class="trust-item__icon"><i class="fas fa-headset"></i></div><div class="trust-item__text">24/7 Expert Support</div></div><div class="trust-item"><div class="trust-item__icon"><i class="fas fa-lock"></i></div><div class="trust-item__text">Secure Payment</div></div></div></div></section>
+
+    <!-- STATS -->
+    <section class="stats-bar"><div class="container"><div class="stats-grid"><div class="stat-item"><div class="stat-item__icon"><i class="fas fa-box-open"></i></div><div class="stat-item__number" data-count="10000">0</div><div class="stat-item__label">Products Available</div></div><div class="stat-item"><div class="stat-item__icon"><i class="fas fa-hospital"></i></div><div class="stat-item__number" data-count="5200">0</div><div class="stat-item__label">Hospitals Served</div></div><div class="stat-item"><div class="stat-item__icon"><i class="fas fa-truck-fast"></i></div><div class="stat-item__number" data-count="48">0</div><div class="stat-item__label">Wilayas Covered</div></div><div class="stat-item"><div class="stat-item__icon"><i class="fas fa-star"></i></div><div class="stat-item__number" data-count="98">0</div><div class="stat-item__label">% Satisfaction Rate</div></div></div></div></section>
+
+    <!-- CATEGORIES -->
+    <section class="categories container"><h2 class="categories__title">Explore by <span>Category</span></h2><div class="categories__grid" id="categoriesGrid"></div></section>
+
+    <!-- PRODUCTS -->
+    <section class="products-section container" id="products">
+        <div class="section__header"><h2 class="section__title"><i class="fas fa-fire"></i> Featured Products</h2><span class="products-count" id="productsCount">Loading...</span></div>
+        <div class="filter-bar" id="filterBar">
+            <button class="filter-tab active" data-filter="all"><span>All Products</span></button>
+            <button class="filter-tab" data-filter="promo"><span>Promotions</span></button>
+            <button class="filter-tab" data-filter="bestseller"><span>Best Sellers</span></button>
+            <button class="filter-tab" data-filter="nouveau"><span>New Arrivals</span></button>
+            <button class="filter-tab" data-filter="under5000"><span>Under 5,000 DZD</span></button>
+            <select class="sort-select" id="sortSelect" aria-label="Sort products"><option value="default">Sort: Default</option><option value="price-asc">Price: Low → High</option><option value="price-desc">Price: High → Low</option><option value="name-asc">Name: A → Z</option><option value="name-desc">Name: Z → A</option><option value="rating">Highest Rated</option><option value="reviews">Most Reviews</option></select>
+            <div class="view-toggle"><button class="view-btn active" data-view="grid" aria-label="Grid view"><i class="fas fa-th"></i></button><button class="view-btn" data-view="list" aria-label="List view"><i class="fas fa-list"></i></button></div>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+        <div class="load-more-wrap" id="loadMoreWrap" style="display:none;"><button class="load-more-btn" id="loadMoreBtn"><span><i class="fas fa-plus-circle"></i> Load More Products</span></button></div>
+    </section>
+
+    <!-- RECENTLY VIEWED -->
+    <section class="recently-section" id="recentlySection" style="display:none;"><div class="container"><h2 class="recently__title"><i class="fas fa-clock-rotate-left"></i> Recently Viewed</h2><div class="recently-scroll" id="recentlyGrid"></div></div></section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials-section"><div class="container"><h2 class="testimonials__title">Trusted by Healthcare Professionals</h2><div class="testimonials-grid"><div class="testimonial-card"><div class="testimonial-card__quote"><i class="fas fa-quote-left"></i></div><p class="testimonial-card__text">"MediShop Pro has been our go-to supplier for 3 years. Their equipment quality and delivery speed are unmatched in Algeria."</p><div class="testimonial-card__author"><div class="testimonial-card__avatar">DR</div><div><div class="testimonial-card__name">Dr. Rabia M.</div><div class="testimonial-card__role">Chief of Surgery, CHU Algiers</div></div></div></div><div class="testimonial-card"><div class="testimonial-card__quote"><i class="fas fa-quote-left"></i></div><p class="testimonial-card__text">"The diagnostic equipment we purchased exceeded our expectations. CE certified, professional grade, at competitive prices."</p><div class="testimonial-card__author"><div class="testimonial-card__avatar">BK</div><div><div class="testimonial-card__name">Dr. Karim B.</div><div class="testimonial-card__role">Laboratory Director, Oran</div></div></div></div><div class="testimonial-card"><div class="testimonial-card__quote"><i class="fas fa-quote-left"></i></div><p class="testimonial-card__text">"Outstanding customer service! They helped us equip our entire clinic within budget. Highly recommended for all medical professionals."</p><div class="testimonial-card__author"><div class="testimonial-card__avatar">SA</div><div><div class="testimonial-card__name">Dr. Amina S.</div><div class="testimonial-card__role">Clinic Owner, Constantine</div></div></div></div></div></div></section>
+
+    <!-- BRANDS -->
+    <section class="brands-section"><div class="container"><h3 class="brands__title">Trusted Brands</h3><div class="brands-grid"><div class="brand-item">3M</div><div class="brand-item">Littmann</div><div class="brand-item">Mindray</div><div class="brand-item">Philips</div><div class="brand-item">GE Health</div><div class="brand-item">Medtronic</div><div class="brand-item">Siemens</div><div class="brand-item">WelchAllyn</div></div></div></section>
+
+    <!-- OFFERS -->
+    <section class="offers-section" id="offers"><div class="container"><div class="offers__header"><h2 class="offers__title"><i class="fas fa-clock"></i> Flash Deals – Limited Time!</h2><p class="offers__subtitle">Don't miss these exceptional deals on certified medical equipment.</p></div><div class="offers__grid" id="offersGrid"></div></div></section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter-section"><div class="container"><div class="newsletter__content"><h2 class="newsletter__title">Stay Updated with Exclusive Deals</h2><p class="newsletter__text">Subscribe to our newsletter for the latest medical equipment offers, new product launches, and professional resources.</p><form class="newsletter__form" onsubmit="return false;"><input type="email" id="newsletterEmail" placeholder="Enter your email address..." aria-label="Email"><button type="submit" id="newsletterBtn">Subscribe <i class="fas fa-paper-plane"></i></button></form></div></div></section>
+
+    <!-- FOOTER -->
+    <footer class="footer"><div class="container"><div class="footer__grid"><div><div class="footer__brand-name"><i class="fas fa-heartbeat"></i> MediShop Pro</div><p class="footer__desc">Your trusted partner for professional medical and paramedical equipment. Over 10,000 CE-certified references, delivered across all 48 wilayas of Algeria.</p><div class="footer__social"><a href="#" class="footer__social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a><a href="#" class="footer__social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" class="footer__social-btn" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" class="footer__social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a><a href="#" class="footer__social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div><div class="footer__payments"><div class="footer__payment-icon"><i class="fab fa-cc-visa"></i></div><div class="footer__payment-icon"><i class="fab fa-cc-mastercard"></i></div><div class="footer__payment-icon"><i class="fab fa-cc-paypal"></i></div><div class="footer__payment-icon"><i class="fas fa-money-bill-wave"></i></div><div class="footer__payment-icon"><i class="fas fa-university"></i></div></div></div><div><h3 class="footer__heading">Information</h3><ul class="footer__links"><li><a href="#" class="footer__link">About Us</a></li><li><a href="#" class="footer__link">Legal Notice</a></li><li><a href="#" class="footer__link">Privacy Policy</a></li><li><a href="#" class="footer__link">Terms & Conditions</a></li><li><a href="#" class="footer__link">Loyalty Program</a></li></ul></div><div><h3 class="footer__heading">Help & Support</h3><ul class="footer__links"><li><a href="#" class="footer__link">Help Center</a></li><li><a href="#" class="footer__link">Order Tracking</a></li><li><a href="#" class="footer__link">Returns & Exchanges</a></li><li><a href="#" class="footer__link">Product Warranty</a></li><li><a href="#" class="footer__link">FAQ</a></li></ul></div><div><h3 class="footer__heading">Contact</h3><ul class="footer__links"><li class="footer__link"><i class="fas fa-phone" style="margin-right:8px;color:var(--accent)"></i> +213 555 123 456</li><li class="footer__link"><i class="fas fa-envelope" style="margin-right:8px;color:var(--accent)"></i> contact@medishop-pro.dz</li><li class="footer__link"><i class="fas fa-map-marker-alt" style="margin-right:8px;color:var(--accent)"></i> Algiers, Algeria</li><li class="footer__link"><i class="fas fa-clock" style="margin-right:8px;color:var(--accent)"></i> Mon-Fri: 8AM-7PM</li></ul></div><div><h3 class="footer__heading">Newsletter</h3><p style="font-size:0.86rem;margin-bottom:16px;">Subscribe for exclusive deals and new product alerts.</p><div class="footer__newsletter"><input type="email" class="footer__newsletter-input" placeholder="Your email..." aria-label="Newsletter"><button class="footer__newsletter-btn">Subscribe</button></div></div></div><div class="footer__bottom"><span>&copy; 2025 MediShop Pro. All rights reserved.</span><span>Designed with <i class="fas fa-heart" style="color:var(--danger)"></i> for healthcare professionals</span></div></div></footer>
+
+    <!-- CART -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <aside class="cart-panel" id="cartPanel" aria-label="Shopping Cart">
+        <div class="cart-panel__header"><h3 class="cart-panel__title"><i class="fas fa-shopping-cart"></i> My Cart (<span id="cartCount">0</span>)</h3><button class="cart-panel__close" id="cartClose" aria-label="Close"><i class="fas fa-times"></i></button></div>
+        <div class="cart-panel__body" id="cartBody"></div>
+        <div class="cart-panel__footer" id="cartFooter"></div>
+    </aside>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay"><div class="modal" id="quickViewModal"><button class="modal__close" id="modalClose" aria-label="Close"><i class="fas fa-times"></i></button><div class="modal__content" id="modalContent"></div></div></div>
+
+    <!-- COMPARE BAR -->
+    <div class="compare-bar" id="compareBar"><span class="compare-bar__text"><i class="fas fa-balance-scale"></i> <span id="compareCount">0</span> products selected for comparison</span><div class="compare-bar__actions"><button class="compare-bar__btn compare-bar__btn--clear" id="clearCompare">Clear All</button><button class="compare-bar__btn compare-bar__btn--primary" id="viewCompare">Compare Now</button></div></div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- SCROLL TOP -->
+    <button class="scroll-top" id="scrollTopBtn" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>

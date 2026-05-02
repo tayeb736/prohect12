@@ -1,0 +1,137 @@
+:root {
+  --admin-sidebar-bg: #1e272e;
+  --admin-sidebar-active: #00d8d6;
+  --admin-accent: #05c46b;
+}
+
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f2f6;
+  font-family: 'Outfit', sans-serif;
+}
+
+.admin-sidebar {
+  width: 280px;
+  background: var(--admin-sidebar-bg);
+  color: white;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.admin-sidebar.closed {
+  width: 80px;
+}
+
+.sidebar-header {
+  padding: 30px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--admin-sidebar-active);
+}
+
+.admin-sidebar.closed .admin-logo span { display: none; }
+
+.admin-nav {
+  flex: 1;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  border-radius: 12px;
+  gap: 15px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.admin-nav-item i { font-size: 1.2rem; min-width: 25px; }
+
+.admin-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.admin-nav-item.active {
+  background: rgba(0, 216, 214, 0.1);
+  color: var(--admin-sidebar-active);
+  font-weight: 600;
+}
+
+.admin-badge {
+  background: #ff3f34;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  position: absolute;
+  right: 15px;
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: 280px;
+  transition: all 0.3s;
+}
+
+.admin-sidebar.closed + .admin-main {
+  margin-left: 80px;
+}
+
+.admin-header {
+  height: 70px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--admin-accent);
+}
+
+.pulse {
+  width: 10px;
+  height: 10px;
+  background: var(--admin-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(5, 196, 107, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(5, 196, 107, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(5, 196, 107, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(5, 196, 107, 0); }
+}
+
+.admin-content {
+  padding: 30px;
+}

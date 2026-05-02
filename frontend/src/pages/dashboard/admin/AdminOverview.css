@@ -1,0 +1,145 @@
+.admin-overview h1 {
+  font-size: 1.8rem;
+  color: #1e272e;
+  margin-bottom: 5px;
+}
+
+.admin-overview p {
+  color: #7f8c8d;
+  margin-bottom: 30px;
+}
+
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.admin-stat-card {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.admin-stat-card .icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.admin-stat-card .info {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-stat-card .label {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  font-weight: 600;
+}
+
+.admin-stat-card .value {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #2c3e50;
+}
+
+/* Dashboard Grid */
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 30px;
+}
+
+.admin-card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f8f9fa;
+  padding-bottom: 15px;
+}
+
+.card-header h3 {
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+.view-btn {
+  background: transparent;
+  border: none;
+  color: #3498db;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pending-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pending-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.store-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.store-info strong { font-size: 0.95rem; color: #2c3e50; }
+.store-info span { font-size: 0.8rem; color: #7f8c8d; }
+
+.review-action-btn {
+  background: #00d8d6;
+  color: #1e272e;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.activity-logs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.log-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: #2c3e50;
+}
+
+.log-entry i { font-size: 1rem; }
+
+.text-success { color: #2ecc71; }
+.text-warning { color: #f1c40f; }
+.text-info { color: #3498db; }

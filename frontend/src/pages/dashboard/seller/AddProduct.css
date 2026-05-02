@@ -1,0 +1,142 @@
+.add-product-page .page-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.back-btn {
+  background: white;
+  border: 1px solid #eee;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.back-btn:hover { background: #f8f9fa; color: #007bff; }
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: #ddd;
+  position: relative;
+}
+
+.step.active { color: #007bff; }
+
+.form-container {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.03);
+  max-width: 800px;
+}
+
+.form-step h2 {
+  margin-bottom: 25px;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  border-bottom: 2px solid #f8f9fa;
+  padding-bottom: 15px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+input, select, textarea {
+  padding: 12px 15px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus { border-color: #007bff; }
+
+.type-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.type-selector button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.type-selector button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.upload-zone {
+  border: 2px dashed #eee;
+  padding: 40px;
+  text-align: center;
+  border-radius: 15px;
+  color: var(--text-secondary);
+}
+
+.upload-zone i { font-size: 3rem; color: #007bff; margin-bottom: 15px; }
+
+.form-footer {
+  margin-top: 40px;
+  padding-top: 25px;
+  border-top: 1px solid #f8f9fa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.btn-primary, .btn-success {
+  padding: 12px 30px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary { background: #007bff; }
+.btn-success { background: #2ed573; }
+.btn-secondary { background: #f1f3f6; color: var(--text-primary); border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+
+.animate-in {
+  animation: fadeIn 0.3s ease-out;
+}

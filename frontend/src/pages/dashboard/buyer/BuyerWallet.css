@@ -1,0 +1,101 @@
+.buyer-wallet h1 {
+  font-size: 1.8rem;
+  color: #2d3748;
+}
+
+.buyer-wallet p {
+  color: #718096;
+  margin-bottom: 30px;
+}
+
+.wallet-overview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.balance-card {
+  background: linear-gradient(135deg, #00d2d3, #00a8a8);
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.balance-card .label { font-size: 0.9rem; opacity: 0.8; }
+.balance-card .balance { font-size: 2rem; font-weight: 800; margin: 10px 0; }
+
+.add-funds-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.payment-methods h3 { font-size: 1.1rem; margin-bottom: 20px; }
+
+.card-item {
+  background: white;
+  padding: 15px 20px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.card-brand { font-size: 1.5rem; color: #1e3799; }
+.card-details { flex: 1; display: flex; flex-direction: column; }
+.card-details span { font-weight: 700; color: #2d3748; }
+.card-details small { color: #718096; }
+
+.remove-btn { background: none; border: none; color: #f56565; font-weight: 600; cursor: pointer; }
+
+.add-card-btn {
+  background: none;
+  border: 2px dashed #cbd5e0;
+  width: 100%;
+  padding: 15px;
+  border-radius: 15px;
+  color: #718096;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.recent-payments h3 { font-size: 1.1rem; margin-bottom: 20px; }
+
+.payment-list {
+  background: white;
+  padding: 10px 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.payment-row:last-child { border: none; }
+
+.pay-info { display: flex; flex-direction: column; }
+.pay-info strong { color: #2d3748; }
+.pay-info span { font-size: 0.8rem; color: #a0aec0; }
+
+.pay-amount { font-weight: 800; color: #2d3748; }
+.pay-amount.success { color: #38a169; }

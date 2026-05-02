@@ -1,0 +1,95 @@
+.seller-orders h1 {
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.order-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.order-tabs button {
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid #eee;
+  background: white;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.order-tabs button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.orders-table-container {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th {
+  background: #f8f9fa;
+  padding: 15px 20px;
+  text-align: left;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.orders-table td {
+  padding: 20px;
+  border-bottom: 1px solid #f8f9fa;
+  font-size: 0.9rem;
+}
+
+.customer-info { display: flex; flex-direction: column; }
+.customer-info small { color: #999; }
+
+.type-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.type-badge.sale { background: #e3f2fd; color: #1e88e5; }
+.type-badge.rental { background: #f3e5f5; color: #8e24aa; }
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.pending { background: #fff8e1; color: #ffab00; }
+.status-badge.shipped { background: #e3f2fd; color: #1e88e5; }
+.status-badge.delivered { background: #e8f5e9; color: #2ed573; }
+
+.btn-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: none;
+  background: #f1f3f6;
+  color: #666;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background: #007bff;
+  color: white;
+}

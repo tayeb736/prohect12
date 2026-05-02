@@ -1,0 +1,139 @@
+:root {
+  --buyer-primary: #00d2d3;
+  --buyer-bg: #f8fafb;
+  --buyer-sidebar-bg: #ffffff;
+}
+
+.buyer-dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: var(--buyer-bg);
+  font-family: 'Inter', sans-serif;
+}
+
+.buyer-sidebar {
+  width: 260px;
+  background: var(--buyer-sidebar-bg);
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  border-right: 1px solid #edf2f7;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.buyer-sidebar.closed {
+  width: 80px;
+  padding: 30px 10px;
+}
+
+.buyer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--buyer-primary);
+  margin-bottom: 40px;
+  padding-left: 10px;
+}
+
+.buyer-sidebar.closed .buyer-logo span { display: none; }
+
+.buyer-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buyer-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  text-decoration: none;
+  color: #4a5568;
+  font-weight: 500;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.buyer-nav-item i { font-size: 1.1rem; min-width: 24px; color: #a0aec0; }
+
+.buyer-nav-item:hover {
+  background: #f7fafc;
+  color: var(--buyer-primary);
+}
+
+.buyer-nav-item.active {
+  background: rgba(0, 210, 211, 0.1);
+  color: var(--buyer-primary);
+}
+
+.buyer-nav-item.active i { color: var(--buyer-primary); }
+
+.buyer-sidebar.closed .buyer-nav-item span { display: none; }
+
+.buyer-main {
+  flex: 1;
+  margin-left: 260px;
+  transition: all 0.3s ease;
+}
+
+.buyer-sidebar.closed + .buyer-main { margin-left: 80px; }
+
+.buyer-header {
+  height: 80px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  border-bottom: 1px solid #edf2f7;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.notifications {
+  position: relative;
+  font-size: 1.3rem;
+  color: #718096;
+  cursor: pointer;
+}
+
+.notifications .dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  background: #f56565;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.username {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.header-user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.buyer-content {
+  padding: 40px;
+}

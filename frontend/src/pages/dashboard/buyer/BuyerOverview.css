@@ -1,0 +1,120 @@
+.buyer-overview h1 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.buyer-overview p {
+  color: #718096;
+  margin-bottom: 35px;
+}
+
+.buyer-stats {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+.buyer-stat-card {
+  background: white;
+  padding: 20px 25px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.buyer-stat-card .icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.buyer-stat-card.wallet .icon { background: #e6fffa; color: #38b2ac; }
+.buyer-stat-card.points .icon { background: #ebf8ff; color: #4299e1; }
+
+.details { display: flex; flex-direction: column; }
+.details span { font-size: 0.85rem; color: #718096; }
+.details strong { font-size: 1.2rem; color: #2d3748; }
+
+.buyer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 30px;
+}
+
+.buyer-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.buyer-card h3 {
+  font-size: 1.1rem;
+  color: #2d3748;
+  margin-bottom: 25px;
+}
+
+.rental-list, .order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rental-item {
+  padding: 20px;
+  background: #f8fafb;
+  border-radius: 16px;
+}
+
+.rental-info { display: flex; flex-direction: column; margin-bottom: 15px; }
+.rental-info strong { color: #2d3748; }
+.rental-info span { font-size: 0.85rem; color: #718096; }
+
+.progress-bar {
+  height: 8px;
+  background: #edf2f7;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.progress-bar .fill {
+  height: 100%;
+  background: var(--buyer-primary);
+  border-radius: 4px;
+}
+
+.days-tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f56565;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.order-id { font-weight: 700; color: #2d3748; }
+.order-date { font-size: 0.8rem; color: #a0aec0; }
+
+.order-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+.order-status.on-the-way { background: #ebf8ff; color: #3182ce; }
+.order-status.delivered { background: #f0fff4; color: #38a169; }

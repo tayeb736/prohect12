@@ -1,0 +1,796 @@
+// ============================================================
+// MediShop Pro - Complete Database Schema
+// B2B Multi-Vendor Medical Equipment Marketplace
+// ============================================================
+
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum Role {
+  SUPER_ADMIN
+  SELLER
+  BUYER
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+enum ProductType {
+  SALE
+  RENT
+  BOTH
+}
+
+enum ProductCondition {
+  NEW
+  USED_LIKE_NEW
+  USED_GOOD
+  USED_FAIR
+}
+
+enum ProductStatus {
+  DRAFT
+  PENDING_REVIEW
+  ACTIVE
+  INACTIVE
+  REJECTED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum RentalStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  RETURNED
+  CANCELLED
+  OVERDUE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum TransactionType {
+  SALE
+  RENTAL
+  DEPOSIT
+  DEPOSIT_REFUND
+  COMMISSION
+  WITHDRAWAL
+}
+
+enum DisputeStatus {
+  OPEN
+  UNDER_REVIEW
+  RESOLVED
+  CLOSED
+}
+
+enum NotificationType {
+  ORDER_UPDATE
+  RENTAL_UPDATE
+  PAYMENT
+  MESSAGE
+  REVIEW
+  DISPUTE
+  SYSTEM
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ============================================================
+// USER & AUTHENTICATION
+// ============================================================
+
+model User {
+  id                String        @id @default(cuid())
+  email             String        @unique
+  phone             String?       @unique
+  password          String
+  role              Role          @default(BUYER)
+  status            AccountStatus @default(PENDING)
+  emailVerified     Boolean       @default(false)
+  phoneVerified     Boolean       @default(false)
+  twoFactorEnabled  Boolean       @default(false)
+  twoFactorSecret   String?
+  refreshToken      String?
+  passwordResetToken String?
+  passwordResetExpiry DateTime?
+  lastLoginAt       DateTime?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  buyerProfile      BuyerProfile?
+  sellerProfile     SellerProfile?
+  adminProfile      AdminProfile?
+  addresses         Address[]
+  notifications     Notification[]
+  sentMessages      Message[]       @relation("SentMessages")
+  receivedMessages  Message[]       @relation("ReceivedMessages")
+  reviews           Review[]
+  disputes          Dispute[]       @relation("DisputeOpener")
+  wishlist          WishlistItem[]
+
+  @@map("users")
+}
+
+model BuyerProfile {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  firstName       String
+  lastName        String
+  avatar          String?
+  organizationType String?  // Hospital, Clinic, Doctor, Pharmacy...
+  organizationName String?
+  wilaya          String?   // الولاية
+  bio             String?
+  taxId           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders          Order[]
+  rentals         Rental[]
+  wallet          Wallet?
+
+  @@map("buyer_profiles")
+}
+
+model SellerProfile {
+  id                  String             @id @default(cuid())
+  userId              String             @unique
+  firstName           String
+  lastName            String
+  avatar              String?
+  verificationStatus  VerificationStatus @default(PENDING)
+  rejectionReason     String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  // Relations
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store               Store?
+  wallet              Wallet?
+
+  @@map("seller_profiles")
+}
+
+model AdminProfile {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  firstName   String
+  lastName    String
+  avatar      String?
+  permissions String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admin_profiles")
+}
+
+// ============================================================
+// STORE & VERIFICATION
+// ============================================================
+
+model Store {
+  id                  String             @id @default(cuid())
+  sellerProfileId     String             @unique
+  name                String
+  slug                String             @unique
+  description         String?
+  logo                String?
+  banner              String?
+  wilaya              String
+  address             String
+  phone               String
+  email               String
+  website             String?
+  taxId               String             // الرقم الجبائي
+  rating              Float              @default(0)
+  totalReviews        Int                @default(0)
+  totalSales          Int                @default(0)
+  commissionRate      Float              @default(10) // النسبة المئوية للمنصة
+  isVerified          Boolean            @default(false)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  // Relations
+  sellerProfile       SellerProfile      @relation(fields: [sellerProfileId], references: [id], onDelete: Cascade)
+  documents           StoreDocument[]
+  products            Product[]
+  subOrders           SubOrder[]
+  reviews             Review[]
+
+  @@map("stores")
+}
+
+model StoreDocument {
+  id          String             @id @default(cuid())
+  storeId     String
+  type        String             // commercial_register, health_ministry_license, ce_certificate...
+  name        String
+  fileUrl     String
+  status      VerificationStatus @default(PENDING)
+  reviewNote  String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  // Relations
+  store       Store              @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@map("store_documents")
+}
+
+// ============================================================
+// PRODUCTS & CATALOG
+// ============================================================
+
+model Category {
+  id          String      @id @default(cuid())
+  name        String
+  nameAr      String
+  slug        String      @unique
+  description String?
+  icon        String?
+  image       String?
+  parentId    String?
+  isActive    Boolean     @default(true)
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  parent      Category?   @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[]  @relation("CategoryHierarchy")
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id                String           @id @default(cuid())
+  storeId           String
+  categoryId        String
+  name              String
+  nameAr            String?
+  slug              String           @unique
+  description       String
+  descriptionAr     String?
+  type              ProductType
+  condition         ProductCondition @default(NEW)
+  status            ProductStatus    @default(DRAFT)
+  brand             String?
+  model             String?
+  serialNumber      String?
+  yearOfManufacture Int?
+  weight            Float?           // بالكيلوغرام
+  dimensions        String?            // { width, height, depth }
+
+  // Sale Fields
+  salePrice         Float?
+  comparePrice      Float?           // السعر قبل الخصم
+
+  // Rent Fields
+  rentPricePerDay   Float?
+  rentPricePerWeek  Float?
+  rentPricePerMonth Float?
+  depositAmount     Float?           // مبلغ التأمين
+
+  // Stock
+  stock             Int              @default(0)
+  sku               String?          @unique
+  minOrderQty       Int              @default(1)
+  maxOrderQty       Int?
+
+  // Specs & Certifications
+  specifications    String?            // مواصفات تقنية مفتوحة
+  certifications    String?            // ["CE", "FDA", "ISO"]
+  warranty          String?          // مدة الضمان
+
+  // SEO
+  metaTitle         String?
+  metaDescription   String?
+  tags              String?
+
+  // Stats
+  viewCount         Int              @default(0)
+  soldCount         Int              @default(0)
+  rating            Float            @default(0)
+  totalReviews      Int              @default(0)
+
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  // Relations
+  store             Store            @relation(fields: [storeId], references: [id])
+  category          Category         @relation(fields: [categoryId], references: [id])
+  images            ProductImage[]
+  documents         ProductDocument[]
+  orderItems        OrderItem[]
+  rentalItems       RentalItem[]
+  rentalCalendar    RentalCalendar[]
+  reviews           Review[]
+  wishlistItems     WishlistItem[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id          String    @id @default(cuid())
+  productId   String
+  url         String
+  alt         String?
+  sortOrder   Int       @default(0)
+  isPrimary   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model ProductDocument {
+  id          String    @id @default(cuid())
+  productId   String
+  type        String    // ce_certificate, manual, warranty_card...
+  name        String
+  fileUrl     String
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_documents")
+}
+
+model RentalCalendar {
+  id          String       @id @default(cuid())
+  productId   String
+  startDate   DateTime
+  endDate     DateTime
+  rentalId    String?
+  isBlocked   Boolean      @default(false)
+  note        String?
+  createdAt   DateTime     @default(now())
+
+  // Relations
+  product     Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("rental_calendar")
+}
+
+// ============================================================
+// ORDERS & CART
+// ============================================================
+
+model Cart {
+  id          String      @id @default(cuid())
+  sessionId   String?     @unique
+  userId      String?
+  items       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("carts")
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique @default(cuid())
+  buyerProfileId  String
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod   String?
+  paymentIntentId String?       // Stripe / Payment Gateway ID
+  totalAmount     Float
+  shippingAmount  Float         @default(0)
+  taxAmount       Float         @default(0)
+  discountAmount  Float         @default(0)
+  notes           String?
+  shippingAddress String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  buyerProfile    BuyerProfile  @relation(fields: [buyerProfileId], references: [id])
+  subOrders       SubOrder[]
+  transactions    Transaction[]
+
+  @@map("orders")
+}
+
+// طلب فرعي لكل بائع في نفس الطلب الرئيسي
+model SubOrder {
+  id              String      @id @default(cuid())
+  orderId         String
+  storeId         String
+  status          OrderStatus @default(PENDING)
+  subtotal        Float
+  commissionAmount Float
+  sellerAmount    Float
+  trackingNumber  String?
+  shippingCarrier String?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  order           Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  store           Store       @relation(fields: [storeId], references: [id])
+  items           OrderItem[]
+
+  @@map("sub_orders")
+}
+
+model OrderItem {
+  id          String    @id @default(cuid())
+  subOrderId  String
+  productId   String
+  productName String
+  productImage String?
+  quantity    Int
+  unitPrice   Float
+  totalPrice  Float
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  subOrder    SubOrder  @relation(fields: [subOrderId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// ============================================================
+// RENTALS
+// ============================================================
+
+model Rental {
+  id              String       @id @default(cuid())
+  rentalNumber    String       @unique @default(cuid())
+  buyerProfileId  String
+  status          RentalStatus @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  paymentMethod   String?
+  paymentIntentId String?
+  startDate       DateTime
+  endDate         DateTime
+  returnedAt      DateTime?
+  totalDays       Int
+  dailyRate       Float
+  totalRentAmount Float
+  depositAmount   Float
+  depositStatus   String       @default("HELD")  // HELD, RETURNED, FORFEITED
+  shippingAddress String?
+  notes           String?
+  contractUrl     String?      // عقد الإيجار PDF
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  // Relations
+  buyerProfile    BuyerProfile  @relation(fields: [buyerProfileId], references: [id])
+  items           RentalItem[]
+  transactions    Transaction[]
+
+  @@map("rentals")
+}
+
+model RentalItem {
+  id          String  @id @default(cuid())
+  rentalId    String
+  productId   String
+  productName String
+  productImage String?
+  quantity    Int
+  unitPrice   Float
+  totalPrice  Float
+
+  // Relations
+  rental      Rental  @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  product     Product @relation(fields: [productId], references: [id])
+
+  @@map("rental_items")
+}
+
+// ============================================================
+// FINANCIALS (Wallet & Transactions)
+// ============================================================
+
+model Wallet {
+  id                String        @id @default(cuid())
+  buyerProfileId    String?       @unique
+  sellerProfileId   String?       @unique
+  balance           Float         @default(0)
+  pendingBalance    Float         @default(0)
+  totalEarned       Float         @default(0)
+  totalWithdrawn    Float         @default(0)
+  currency          String        @default("DZD")
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  buyerProfile      BuyerProfile?  @relation(fields: [buyerProfileId], references: [id])
+  sellerProfile     SellerProfile? @relation(fields: [sellerProfileId], references: [id])
+  transactions      Transaction[]
+  withdrawals       Withdrawal[]
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id              String          @id @default(cuid())
+  walletId        String
+  orderId         String?
+  rentalId        String?
+  type            TransactionType
+  amount          Float
+  commissionAmount Float?
+  currency        String          @default("DZD")
+  status          PaymentStatus   @default(PENDING)
+  paymentGatewayId String?
+  description     String?
+  metadata        String?
+  createdAt       DateTime        @default(now())
+
+  // Relations
+  wallet          Wallet          @relation(fields: [walletId], references: [id])
+  order           Order?          @relation(fields: [orderId], references: [id])
+  rental          Rental?         @relation(fields: [rentalId], references: [id])
+
+  @@map("transactions")
+}
+
+model Withdrawal {
+  id              String        @id @default(cuid())
+  walletId        String
+  amount          Float
+  status          String        @default("PENDING") // PENDING, APPROVED, REJECTED, COMPLETED
+  bankName        String?
+  accountNumber   String?
+  accountHolder   String?
+  processedAt     DateTime?
+  rejectionReason String?
+  adminNote       String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  wallet          Wallet        @relation(fields: [walletId], references: [id])
+
+  @@map("withdrawals")
+}
+
+// ============================================================
+// REVIEWS & RATINGS
+// ============================================================
+
+model Review {
+  id          String    @id @default(cuid())
+  userId      String
+  productId   String?
+  storeId     String?
+  rating      Int       // 1-5
+  title       String?
+  comment     String
+  isVerified  Boolean   @default(false) // هل اشترى المنتج فعلاً
+  isHidden    Boolean   @default(false)
+  sellerReply String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id])
+  product     Product?  @relation(fields: [productId], references: [id])
+  store       Store?    @relation(fields: [storeId], references: [id])
+
+  @@map("reviews")
+}
+
+// ============================================================
+// DISPUTES
+// ============================================================
+
+model Dispute {
+  id          String        @id @default(cuid())
+  openedById  String
+  orderId     String?
+  rentalId    String?
+  status      DisputeStatus @default(OPEN)
+  subject     String
+  description String
+  resolution  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  openedBy    User          @relation("DisputeOpener", fields: [openedById], references: [id])
+  messages    DisputeMessage[]
+
+  @@map("disputes")
+}
+
+model DisputeMessage {
+  id          String    @id @default(cuid())
+  disputeId   String
+  senderId    String
+  message     String
+  attachments String?
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  dispute     Dispute   @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+
+  @@map("dispute_messages")
+}
+
+// ============================================================
+// MESSAGING
+// ============================================================
+
+model Conversation {
+  id          String    @id @default(cuid())
+  productId   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  messages    Message[]
+
+  @@map("conversations")
+}
+
+model Message {
+  id              String        @id @default(cuid())
+  conversationId  String
+  senderId        String
+  receiverId      String
+  content         String
+  attachments     String?
+  isRead          Boolean       @default(false)
+  readAt          DateTime?
+  createdAt       DateTime      @default(now())
+
+  // Relations
+  conversation    Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender          User          @relation("SentMessages", fields: [senderId], references: [id])
+  receiver        User          @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  @@map("messages")
+}
+
+// ============================================================
+// ADDRESS
+// ============================================================
+
+model Address {
+  id          String    @id @default(cuid())
+  userId      String
+  label       String?   // Home, Work, Clinic...
+  firstName   String
+  lastName    String
+  phone       String
+  wilaya      String
+  commune     String
+  street      String
+  postalCode  String?
+  isDefault   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+// ============================================================
+// WISHLIST
+// ============================================================
+
+model WishlistItem {
+  id          String    @id @default(cuid())
+  userId      String
+  productId   String
+  createdAt   DateTime  @default(now())
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+
+model Notification {
+  id          String           @id @default(cuid())
+  userId      String
+  type        NotificationType
+  title       String
+  body        String
+  data        String?
+  isRead      Boolean          @default(false)
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+
+  // Relations
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// ============================================================
+// PROMO CODES & DISCOUNTS
+// ============================================================
+
+model PromoCode {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  description     String?
+  discountType    String    // PERCENTAGE or FIXED
+  discountValue   Float
+  minOrderAmount  Float?
+  maxUses         Int?
+  usedCount       Int       @default(0)
+  isActive        Boolean   @default(true)
+  expiresAt       DateTime?
+  storeId         String?   // null = يسري على كل المنصة
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("promo_codes")
+}
+
+// ============================================================
+// PLATFORM SETTINGS
+// ============================================================
+
+model PlatformSetting {
+  id          String    @id @default(cuid())
+  key         String    @unique
+  value       String
+  description String?
+  updatedAt   DateTime  @updatedAt
+
+  @@map("platform_settings")
+}
