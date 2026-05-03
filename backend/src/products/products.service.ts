@@ -109,7 +109,7 @@ export class ProductsService {
     // Create slug from name
     const slug = `${dto.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`;
 
-    const { certifications, tags, dimensions, specifications, ...rest } = dto;
+    const { certifications, tags, dimensions, specifications, images, ...rest } = dto;
 
     return this.prisma.product.create({
       data: {
@@ -120,7 +120,13 @@ export class ProductsService {
         specifications: specifications ? JSON.stringify(specifications) : undefined,
         storeId: store.id,
         slug,
-        status: ProductStatus.PENDING_REVIEW,
+        status: ProductStatus.ACTIVE,
+        images: images && Array.isArray(images) ? {
+          create: images.map((url: string, index: number) => ({
+            url,
+            isPrimary: index === 0
+          }))
+        } : undefined
       },
     });
   }

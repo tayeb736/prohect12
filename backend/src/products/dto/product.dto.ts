@@ -81,6 +81,11 @@ export class CreateProductDto {
 
   @IsOptional()
   specifications?: any;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  images?: string[];
 }
 
 export class UpdateProductDto extends CreateProductDto {}
