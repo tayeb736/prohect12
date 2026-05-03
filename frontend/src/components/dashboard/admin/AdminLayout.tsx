@@ -46,9 +46,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               key={item.path}
               to={item.path}
               className={`admin-nav-item ${location.pathname === item.path ? 'active' : ''}`}
+              title={!isSidebarOpen ? item.name : ''}
             >
               <i className={item.icon}></i>
-              <span className="nav-text">{item.name}</span>
+              {isSidebarOpen && <span className="nav-text">{item.name}</span>}
             </Link>
           ))}
         </nav>
