@@ -10,30 +10,10 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const [counts, setCounts] = useState({ stores: 0, products: 0, disputes: 0 });
   const location = useLocation();
   const navigate = useNavigate();
   const user = authService.getCurrentUser();
   const profileName = user?.profile?.firstName ? `${user.profile.firstName} ${user.profile.lastName}` : user?.email || 'Admin';
-
-  useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        const [stores, products] = await Promise.all([
-          api.get('/admin/pending-stores'),
-          api.get('/products?status=PENDING_REVIEW')
-        ]);
-        setCounts({
-          stores: stores.data.length,
-          products: products.data.data?.length || 0,
-          disputes: 0 // Placeholder for now
-        });
-      } catch (err) {
-        console.error('Failed to fetch counts', err);
-      }
-    };
-    fetchCounts();
-  }, []);
 
   const handleLogout = async () => {
     await authService.logout();
@@ -42,8 +22,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const menuItems = [
     { name: 'Control Panel', path: '/dashboard/admin', icon: 'fas fa-chart-line' },
-    { name: 'Store Requests', path: '/dashboard/admin/stores', icon: 'fas fa-store-alt', badge: counts.stores > 0 ? counts.stores.toString() : null },
-    { name: 'Product Approval', path: '/dashboard/admin/products', icon: 'fas fa-check-circle', badge: counts.products > 0 ? counts.products.toString() : null },
+    { name: 'Store Requests', path: '/dashboard/admin/stores', icon: 'fas fa-store-alt' },
+    { name: 'Product Approval', path: '/dashboard/admin/products', icon: 'fas fa-check-circle' },
     { name: 'Disputes', path: '/dashboard/admin/disputes', icon: 'fas fa-exclamation-triangle' },
     { name: 'Transactions', path: '/dashboard/admin/transactions', icon: 'fas fa-exchange-alt' },
     { name: 'All Users', path: '/dashboard/admin/users', icon: 'fas fa-users' },
