@@ -26,7 +26,7 @@ export class CreateStoreDto {
   website?: string;
 
   @IsString()
-  taxId: string; // الرقم الجبائي NIF
+  taxId: string; // NIF Tax ID
 }
 
 export class UpdateStoreDto extends (CreateStoreDto) {}

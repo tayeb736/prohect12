@@ -107,7 +107,7 @@ const ProductDetails: React.FC = () => {
                       });
                       navigate('/checkout');
                     } else {
-                      alert('يجب عليك تسجيل الدخول أو إنشاء حساب جديد لإتمام الشراء');
+                      alert('You must log in or create an account to complete your purchase.');
                       navigate('/register');
                     }
                   }}

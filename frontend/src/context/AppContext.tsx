@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode, Dispatch, SetStateAction } from 'react';
 import { productService } from '../services/product.service';
+import { allProducts, categoriesData } from '../data';
 
 export type Product = {
   id: number | string;
@@ -13,8 +14,8 @@ export type Product = {
   reviews?: number;
   totalReviews?: number;
   stock?: number;
-  tags?: string;
-  type: 'SALE' | 'RENT' | 'BOTH';
+  tags?: string | string[];
+  type?: 'SALE' | 'RENT' | 'BOTH';
   rentPriceDay?: number;
 };
 
@@ -64,8 +65,8 @@ type AppContextType = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>(allProducts as Product[]);
+  const [categories, setCategories] = useState<any[]>(categoriesData);
   const [loading, setLoading] = useState(true);
 
   // Theme & Language
@@ -106,28 +107,30 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [productsData, categoriesData] = await Promise.all([
+        const [productsData, remoteCategoriesData] = await Promise.all([
           productService.getAll(),
           productService.getCategories()
         ]);
 
-        const mappedProducts = (productsData?.data || []).map((p: any) => ({
-          ...p,
-          price: p.salePrice ?? 0,
-          oldPrice: p.comparePrice ?? null,
-          image: p.images?.[0]?.url || 'https://placehold.co/400x300/E5E7EB/9CA3AF?text=No+Image',
-          category: p.category?.name || 'Uncategorized',
-          reviews: p.totalReviews ?? 0,
-          tags: p.tags || '',
-          stock: p.stock ?? 0,
-        }));
+        if (productsData?.data && productsData.data.length > 0) {
+          const mappedProducts = productsData.data.map((p: any) => ({
+            ...p,
+            price: p.salePrice ?? 0,
+            oldPrice: p.comparePrice ?? null,
+            image: p.images?.[0]?.url || 'https://placehold.co/400x300/E5E7EB/9CA3AF?text=No+Image',
+            category: p.category?.name || 'Uncategorized',
+            reviews: p.totalReviews ?? 0,
+            tags: p.tags || '',
+            stock: p.stock ?? 0,
+          }));
+          setProducts(mappedProducts);
+        }
 
-        setProducts(mappedProducts);
-        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        if (Array.isArray(remoteCategoriesData) && remoteCategoriesData.length > 0) {
+          setCategories(remoteCategoriesData);
+        }
       } catch (err) {
-        console.error('Failed to fetch store data:', err);
-        setProducts([]);
-        setCategories([]);
+        console.error('Failed to fetch remote data, using local data:', err);
       } finally {
         setLoading(false);
       }

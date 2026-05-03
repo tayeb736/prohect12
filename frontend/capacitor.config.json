@@ -1,0 +1,8 @@
+{
+  "appId": "dz.medishop.pro",
+  "appName": "MediShop Pro",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

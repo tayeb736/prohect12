@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../../services/api';
+import { seedDatabase } from '../../../services/seeder.service';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './AdminOverview.css';
 
@@ -7,6 +8,7 @@ const AdminOverview: React.FC = () => {
   const [stats, setStats] = useState<any>(null);
   const [pendingStores, setPendingStores] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [seeding, setSeeding] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,6 +38,19 @@ const AdminOverview: React.FC = () => {
     }
   };
 
+  const handleSeedData = async () => {
+    if (!window.confirm('Are you sure you want to seed 200 products to the live database?')) return;
+    setSeeding(true);
+    try {
+      const result = await seedDatabase();
+      alert(`Success: ${result.successCount}, Failed: ${result.failCount}`);
+    } catch (err) {
+      alert('Seeding failed. Check console for details.');
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   const formatPrice = (p: number) => new Intl.NumberFormat('fr-DZ').format(Math.round(p)) + ' DZD';
 
   if (loading) return <div>Loading Admin Panel...</div>;
@@ -59,9 +74,30 @@ const AdminOverview: React.FC = () => {
 
   return (
     <div className="admin-overview">
-      <div className="overview-header">
-        <h1>Platform Overview</h1>
-        <p>Real-time data for MediShop Pro ecosystem.</p>
+      <div className="overview-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1>Platform Overview</h1>
+          <p>Real-time data for MediShop Pro ecosystem.</p>
+        </div>
+        <button
+          onClick={handleSeedData}
+          disabled={seeding}
+          style={{
+            background: seeding ? '#94a3b8' : '#3b82f6',
+            color: 'white',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '8px',
+            cursor: seeding ? 'not-allowed' : 'pointer',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+        >
+          <i className={`fas ${seeding ? 'fa-spinner fa-spin' : 'fa-database'}`}></i>
+          {seeding ? 'Seeding...' : 'Seed 200 Products'}
+        </button>
       </div>
 
       <div className="admin-stats-grid">

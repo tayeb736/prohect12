@@ -86,9 +86,9 @@ export const Header = () => {
                     </button>
                     <div className="search__suggestions" id="searchSuggestions"></div>
                 </div>
-                <div className="header__actions" style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-                    <button className="header__action-btn" aria-label="Compare" id="compareToggle"><i className="fas fa-balance-scale"></i></button>
-                    <button className="header__action-btn" aria-label="Wishlist">
+                <div className="header__actions" id="headerActions">
+                    <button className="header__action-btn btn-compare-hide" aria-label="Compare" id="compareToggle"><i className="fas fa-balance-scale"></i></button>
+                    <button className="header__action-btn btn-wishlist-hide" aria-label="Wishlist">
                         <i className="far fa-heart"></i>
                         {wishlist.length > 0 && <span className="header__badge" id="wishlistBadge">{wishlist.length}</span>}
                     </button>
