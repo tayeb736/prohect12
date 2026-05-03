@@ -132,19 +132,25 @@ export class ProductsService {
   }
 
   // Seller: Update their own product
-  async update(productId: string, sellerId: string, dto: any) {
+  async update(productId: string, userId: string, dto: any) {
+    const sellerProfile = await this.prisma.sellerProfile.findUnique({ where: { userId } });
+    if (!sellerProfile) throw new ForbiddenException('Seller profile not found');
+
     const product = await this.prisma.product.findUnique({ where: { id: productId }, include: { store: true } });
     if (!product) throw new NotFoundException('Product not found');
-    if (product.store.sellerProfileId !== sellerId) throw new ForbiddenException('Not your product');
+    if (product.store.sellerProfileId !== sellerProfile.id) throw new ForbiddenException('Not your product');
 
     return this.prisma.product.update({ where: { id: productId }, data: dto });
   }
 
   // Seller: Delete their own product
-  async remove(productId: string, sellerId: string) {
+  async remove(productId: string, userId: string) {
+    const sellerProfile = await this.prisma.sellerProfile.findUnique({ where: { userId } });
+    if (!sellerProfile) throw new ForbiddenException('Seller profile not found');
+
     const product = await this.prisma.product.findUnique({ where: { id: productId }, include: { store: true } });
     if (!product) throw new NotFoundException('Product not found');
-    if (product.store.sellerProfileId !== sellerId) throw new ForbiddenException('Not your product');
+    if (product.store.sellerProfileId !== sellerProfile.id) throw new ForbiddenException('Not your product');
 
     return this.prisma.product.delete({ where: { id: productId } });
   }
