@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
 import { authService } from '../../services/auth.service';
+import { Header } from '../../components/Header';
+import { Footer } from '../../components/Footer';
+import { CartPanel } from '../../components/CartPanel';
+import { Sidebar } from '../../components/Sidebar';
+import { ScrollTop } from '../../components/ScrollTop';
 import './ProductDetails.css';
 
 const ProductDetails: React.FC = () => {
@@ -19,7 +24,10 @@ const ProductDetails: React.FC = () => {
   if (!product) return <div>Product not found</div>;
 
   return (
-    <div className="product-details-page">
+    <>
+      <Sidebar />
+      <Header />
+      <div className="product-details-page">
       <div className="container">
         {/* Breadcrumbs */}
         <nav className="breadcrumb">
@@ -258,6 +266,10 @@ const ProductDetails: React.FC = () => {
         </div>
       </div>
     </div>
+    <Footer />
+    <CartPanel />
+    <ScrollTop />
+  </>
   );
 };
 

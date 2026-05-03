@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext';
+import { Header } from '../../components/Header';
+import { Footer } from '../../components/Footer';
+import { CartPanel } from '../../components/CartPanel';
+import { ScrollTop } from '../../components/ScrollTop';
+import { Sidebar } from '../../components/Sidebar';
 import './Shop.css';
 
 const Shop: React.FC = () => {
@@ -20,7 +25,10 @@ const Shop: React.FC = () => {
   }
 
   return (
-    <div className="shop-page">
+    <>
+      <Sidebar />
+      <Header />
+      <div className="shop-page">
       <div className="container">
         <div className="shop-layout">
           {/* Sidebar Filters */}
@@ -137,7 +145,11 @@ const Shop: React.FC = () => {
           </main>
         </div>
       </div>
-    </div>
+      </div>
+      <Footer />
+      <CartPanel />
+      <ScrollTop />
+    </>
   );
 };
 
