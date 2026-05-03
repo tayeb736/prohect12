@@ -20,6 +20,8 @@ export class CategoriesController {
   }
 
   @Post('seed')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('SUPER_ADMIN' as any)
   seed() {
     return this.categoriesService.seed();
   }

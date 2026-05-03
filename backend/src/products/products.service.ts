@@ -120,7 +120,7 @@ export class ProductsService {
         specifications: specifications ? JSON.stringify(specifications) : undefined,
         storeId: store.id,
         slug,
-        status: ProductStatus.ACTIVE,
+        status: ProductStatus.PENDING_REVIEW,
       },
     });
   }
