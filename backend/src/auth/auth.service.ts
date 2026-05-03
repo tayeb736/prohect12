@@ -48,6 +48,14 @@ export class AuthService {
             },
           },
         }),
+        ...(dto.role === Role.SUPER_ADMIN && {
+          adminProfile: {
+            create: {
+              firstName: dto.firstName,
+              lastName: dto.lastName,
+            },
+          },
+        }),
       },
     });
 

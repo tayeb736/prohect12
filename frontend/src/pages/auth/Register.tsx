@@ -33,7 +33,7 @@ const Register: React.FC = () => {
       await authService.register({
         email: formData.email,
         password: formData.password,
-        role: role,
+        role: role === 'ADMIN' ? 'SUPER_ADMIN' : role,
         firstName: firstName,
         lastName: lastName
       });

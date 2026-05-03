@@ -9,7 +9,7 @@ export class RegisterDto {
   @MinLength(8, { message: 'Password must be at least 8 characters' })
   password: string;
 
-  @IsEnum([Role.BUYER, Role.SELLER], { message: 'Role must be BUYER or SELLER' })
+  @IsEnum([Role.BUYER, Role.SELLER, Role.SUPER_ADMIN], { message: 'Role must be BUYER, SELLER or SUPER_ADMIN' })
   role: Role;
 
   @IsString()
