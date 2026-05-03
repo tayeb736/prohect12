@@ -21,9 +21,9 @@ const AdminStores: React.FC = () => {
     }
   };
 
-  const verifyStore = async (id: string, status: 'APPROVED' | 'REJECTED') => {
+  const verifyStore = async (id: string, status: 'ACTIVE' | 'REJECTED') => {
     try {
-      await api.post(`/admin/stores/${id}/verify`, { status });
+      await api.patch(`/stores/${id}/verify`, { status });
       alert(`Store has been ${status}`);
       fetchStores();
     } catch (err) {
@@ -62,7 +62,7 @@ const AdminStores: React.FC = () => {
                   <td>{store.wilaya}</td>
                   <td>{store.taxId}</td>
                   <td>
-                    <button onClick={() => verifyStore(store.id, 'APPROVED')} className="btn-approve" style={{background: '#10b981', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', marginRight: '5px'}}>Approve</button>
+                    <button onClick={() => verifyStore(store.id, 'ACTIVE')} className="btn-approve" style={{background: '#10b981', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer', marginRight: '5px'}}>Approve</button>
                     <button onClick={() => verifyStore(store.id, 'REJECTED')} className="btn-reject" style={{background: '#ef4444', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer'}}>Reject</button>
                   </td>
                 </tr>

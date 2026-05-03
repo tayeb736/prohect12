@@ -29,4 +29,19 @@ export class AdminController {
   approveWithdrawal(@Param('transactionId') transactionId: string) {
     return this.adminService.approveWithdrawal(transactionId);
   }
+
+  @Get('users')
+  getAllUsers() {
+    return this.adminService.getAllUsers();
+  }
+
+  @Get('transactions')
+  getAllTransactions() {
+    return this.adminService.getAllTransactions();
+  }
+
+  @Get('disputes')
+  getAllDisputes() {
+    return this.adminService.getAllDisputes();
+  }
 }

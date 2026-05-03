@@ -52,4 +52,33 @@ export class AdminService {
       data: { status: 'PAID' }
     });
   }
+
+  async getAllUsers() {
+    return this.prisma.user.findMany({
+      include: { 
+        buyerProfile: true, 
+        sellerProfile: { include: { store: true } }, 
+        adminProfile: true 
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
+
+  async getAllTransactions() {
+    return this.prisma.transaction.findMany({
+      include: { 
+        wallet: { include: { sellerProfile: { include: { store: true } } } } 
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
+
+  async getAllDisputes() {
+    return this.prisma.dispute.findMany({
+      include: { 
+        openedBy: { include: { buyerProfile: true, sellerProfile: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
 }

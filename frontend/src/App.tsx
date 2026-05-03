@@ -13,6 +13,8 @@ import AdminOverview from './pages/dashboard/admin/AdminOverview';
 import AdminStores from './pages/dashboard/admin/AdminStores';
 import AdminProducts from './pages/dashboard/admin/AdminProducts';
 import AdminDisputes from './pages/dashboard/admin/AdminDisputes';
+import AdminUsers from './pages/dashboard/admin/AdminUsers';
+import AdminTransactions from './pages/dashboard/admin/AdminTransactions';
 import BuyerLayout from './components/dashboard/buyer/BuyerLayout';
 import BuyerOverview from './pages/dashboard/buyer/BuyerOverview';
 import BuyerOrders from './pages/dashboard/buyer/BuyerOrders';
@@ -81,6 +83,8 @@ function App() {
                   <Route path="/stores" element={<AdminStores />} />
                   <Route path="/products" element={<AdminProducts />} />
                   <Route path="/disputes" element={<AdminDisputes />} />
+                  <Route path="/users" element={<AdminUsers />} />
+                  <Route path="/transactions" element={<AdminTransactions />} />
                   <Route path="/profile" element={<ProfileSettings />} />
                 </Routes>
               </AdminLayout>
