@@ -79,6 +79,7 @@
 }
 
 .admin-badge {
+  display: none !important;
   background: #ff3f34;
   color: white;
   font-size: 0.7rem;

@@ -49,7 +49,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             >
               <i className={item.icon}></i>
               <span className="nav-text">{item.name}</span>
-              {item.badge && isSidebarOpen && <span className="admin-badge">{item.badge}</span>}
             </Link>
           ))}
         </nav>
