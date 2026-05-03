@@ -35,23 +35,9 @@ async function main() {
   if (!token) { console.log('Login failed!'); return; }
 
   console.log('Getting store and categories...');
-  const storeRes = await apiCall('GET', '/stores/my-store', null, token);
-  const storeId = storeRes.data.id;
   const catsRes = await apiCall('GET', '/categories', null, token);
   const catMap = {};
   catsRes.data.forEach(c => catMap[c.slug] = c.id);
-
-  console.log('Getting ALL existing products for store to delete...');
-  // Increased limit to 100 to catch everything
-  const prodsRes = await apiCall('GET', `/products?storeId=${storeId}&limit=100`, null, token);
-  const existingProds = prodsRes.data.data;
-  console.log(`Found ${existingProds.length} products to delete.`);
-  
-  for (const p of existingProds) {
-    console.log(`Deleting ${p.name} (${p.id})...`);
-    const delRes = await apiCall('DELETE', `/products/${p.id}`, null, token);
-    console.log(`Delete ${p.id}: ${delRes.status}`);
-  }
 
   const products = [
     { name: 'Siemens ACUSON X700 Ultrasound System', description: 'Advanced diagnostic ultrasound with 4D imaging. For cardiology, radiology & obstetrics.', salePrice: 3500000, comparePrice: 4200000, type: 'SALE', stock: 3, brand: 'Siemens', condition: 'NEW', categoryId: catMap['radiology-imaging'], images: ['https://images.unsplash.com/photo-1579154341098-e4e158cc7f55?auto=format&fit=crop&w=600&q=80'] },
@@ -69,7 +55,7 @@ async function main() {
   console.log('Adding new products...');
   for (const p of products) {
     const res = await apiCall('POST', '/products', p, token);
-    console.log(`${p.name}: ${res.status}`);
+    console.log(`${p.name}: ${res.status} ${JSON.stringify(res.data)}`);
   }
 
   console.log('Done!');
