@@ -8,7 +8,7 @@ export const Header = () => {
   const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
   const token = localStorage.getItem('ms_token');
   const user = authService.getCurrentUser();
-  const dashboardLink = user?.role === 'SELLER' ? '/dashboard/seller' : user?.role === 'SUPER_ADMIN' ? '/dashboard/admin' : '/dashboard/buyer';
+  const dashboardLink = (user?.role === 'SUPER_ADMIN' || user?.role === 'ADMIN') ? '/dashboard/admin' : user?.role === 'SELLER' ? '/dashboard/seller' : '/dashboard/buyer';
   const navigate = useNavigate();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
