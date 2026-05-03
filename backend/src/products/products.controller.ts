@@ -46,4 +46,12 @@ export class ProductsController {
   remove(@Param('id') id: string, @Req() req: any) {
     return this.productsService.remove(id, req.user.sub);
   }
+
+  // ADMIN ONLY - update status (approve/reject)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('SUPER_ADMIN' as any, 'ADMIN' as any)
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: string, @Body() dto: { status: string, rejectionReason?: string }) {
+    return this.productsService.updateStatus(id, dto.status as any, dto.rejectionReason);
+  }
 }

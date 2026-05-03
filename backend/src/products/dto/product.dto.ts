@@ -111,6 +111,10 @@ export class ProductQueryDto {
   @IsOptional()
   condition?: ProductCondition;
 
+  @IsString()
+  @IsOptional()
+  status?: string;
+
   @IsNumber()
   @IsOptional()
   @Type(() => Number)

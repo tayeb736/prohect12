@@ -14,7 +14,8 @@ export class ProductsService {
       const skip = (page - 1) * limit;
 
       const where: any = {
-        ...(storeId ? { storeId } : { status: ProductStatus.ACTIVE }),
+        ...(storeId ? { storeId } : {}),
+        status: (query as any).status || (storeId ? undefined : ProductStatus.ACTIVE),
         ...(search && {
           OR: [
             { name: { contains: search } },

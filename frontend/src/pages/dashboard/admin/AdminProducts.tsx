@@ -12,9 +12,8 @@ const AdminProducts: React.FC = () => {
   const fetchPendingProducts = async () => {
     try {
       // Assuming endpoint exists or fetch all and filter locally for MVP
-      const res = await api.get('/products');
-      const pending = res.data.filter((p: any) => p.status === 'PENDING_REVIEW');
-      setProducts(pending);
+      const res = await api.get('/products?status=PENDING_REVIEW');
+      setProducts(res.data.data);
     } catch (err) {
       console.error('Failed to fetch products', err);
     } finally {
@@ -24,7 +23,7 @@ const AdminProducts: React.FC = () => {
 
   const updateStatus = async (id: string, status: 'ACTIVE' | 'REJECTED') => {
     try {
-      await api.patch(`/products/${id}`, { status });
+      await api.patch(`/products/${id}/status`, { status });
       alert(`Product marked as ${status}`);
       fetchPendingProducts();
     } catch (err) {
