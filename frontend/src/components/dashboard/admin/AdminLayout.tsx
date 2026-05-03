@@ -49,7 +49,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               title={!isSidebarOpen ? item.name : ''}
             >
               <i className={item.icon}></i>
-              {isSidebarOpen && <span className="nav-text">{item.name}</span>}
+              <span className="nav-text">{item.name}</span>
             </Link>
           ))}
         </nav>
@@ -57,12 +57,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <div className="admin-sidebar-footer">
           <div className="admin-info">
             <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(profileName)}&background=000&color=fff`} alt="Admin" />
-            {isSidebarOpen && (
-              <div className="text">
-                <span className="name">{profileName}</span>
-                <span className="status">Online</span>
-              </div>
-            )}
+            <div className="text">
+              <span className="name">{profileName}</span>
+              <span className="status">Online</span>
+            </div>
           </div>
         </div>
       </aside>
