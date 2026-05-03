@@ -168,8 +168,8 @@ export const Header = () => {
             <div className="container">
                 <ul className="nav__list">
                     <li><Link to="/shop" className="nav__link active" id="megaTrigger"><span>All Categories</span></Link></li>
-                    <li><a href="/#offers" className="nav__link"><span>Flash Deals</span><span className="nav__link__hot"></span></a></li>
-                    <li><a href="/#brands" className="nav__link"><span>Brands</span></a></li>
+                    <li><Link to="/shop?filter=offers" className="nav__link"><span>Flash Deals</span><span className="nav__link__hot"></span></Link></li>
+                    <li><Link to="/shop?filter=brands" className="nav__link"><span>Brands</span></Link></li>
                     <li><Link to="/shop?filter=new" className="nav__link"><span>New Arrivals</span><span className="nav__link__hot"></span></Link></li>
                     <li><Link to="/shop?filter=best" className="nav__link"><span>Best Sellers</span></Link></li>
                     <li><Link to="/dashboard/buyer/support" className="nav__link"><span>Support 24/7</span></Link></li>
