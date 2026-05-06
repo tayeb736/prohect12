@@ -1,78 +1,78 @@
-# 🏥 MediShop Pro - التقرير الشامل للمشروع (v1.0)
+# 🏥 MediShop Pro - Comprehensive Project Report (v1.0)
 
-## 📋 نظرة عامة
-**MediShop Pro** هو منصة تجارة إلكترونية B2B متكاملة ومتخصصة في بيع وتأجير المعدات الطبية في الجزائر. يجمع المشروع بين البائعين (الشركات والموردين) والمشترين (المستشفيات، العيادات، والأطباء) في بيئة رقمية آمنة ومنظمة.
-
----
-
-## 🛠 التقنيات المستخدمة (Tech Stack)
-
-### 1. الواجهة الخلفية (Backend)
-*   **NestJS**: إطار عمل قوي مبني على Node.js لضمان هيكلية نظيفة وقابلة للتوسع.
-*   **Prisma 7**: أحدث نسخة من ORM للتعامل مع قاعدة البيانات بدقة عالية.
-*   **PostgreSQL**: قاعدة بيانات علائقية قوية لإدارة البيانات الضخمة والمعقدة.
-*   **JWT & Bcrypt**: لتأمين عملية تسجيل الدخول وتشفير كلمات المرور.
-*   **Swagger/OpenAPI**: لتوثيق مسارات الـ API واختبارها بسهولة.
-
-### 2. الواجهة الأمامية (Frontend)
-*   **React 19**: أحدث نسخة لبناء واجهات مستخدم سريعة وتفاعلية.
-*   **Vite**: أداة بناء فائقة السرعة للمشروع.
-*   **React Router 7**: لإدارة المسارات والانتقال بين الصفحات.
-*   **Context API**: لإدارة حالة التطبيق (العربة، المستخدم، المنتجات) بدون تعقيد.
-*   **Axios**: للربط الحي والمباشر مع الـ Backend.
+## 📋 Overview
+**MediShop Pro** is an integrated B2B e-commerce platform specialized in selling and renting medical equipment in Algeria. The project connects sellers (companies and suppliers) with buyers (hospitals, clinics, and doctors) in a secure and organized digital environment.
 
 ---
 
-## 🚀 المميزات الرئيسية (Core Features)
+## 🛠 Tech Stack
 
-### 1. نظام تعدد البائعين (Multi-vendor System)
-*   يمكن لكل بائع إنشاء متجره الخاص ورفع وثائقه للتوثيق (KYC).
-*   نظام تقسيم الطلبات تلقائياً بين البائعين عند الشراء من متاجر مختلفة.
+### 1. Backend
+*   **NestJS**: A powerful framework built on Node.js to ensure clean and scalable architecture.
+*   **Prisma 7**: The latest version of the ORM for high-precision database management.
+*   **PostgreSQL**: A robust relational database for managing large and complex data.
+*   **JWT & Bcrypt**: To secure the login process and encrypt passwords.
+*   **Swagger/OpenAPI**: To easily document and test API routes.
 
-### 2. نظام البيع والكراء (Hybrid Marketplace)
-*   دعم كامل لبيع الأجهزة الطبية الجديدة والمستعملة.
-*   **نظام إيجار متطور**: يسمح بحجز الأجهزة لفترات محددة مع حساب الأسعار اليومية ومبالغ التأمين.
-
-### 3. النظام المالي والمحفظة (Financial Wallet)
-*   محفظة رقمية لكل بائع لمتابعة أرباحه وطلب السحوبات.
-*   حساب تلقائي لعمولات المنصة (Platform Commission).
-*   سجل معاملات كامل (Transactions History).
-
-### 4. لوحات التحكم (Triple Dashboards)
-*   **لوحة المدير (Admin)**: للرقابة، توثيق المتاجر، والموافقة على المنتجات.
-*   **لوحة البائع (Seller)**: لإدارة المخزن، تتبع الطلبات، وسحب الأرباح.
-*   **لوحة المشتري (Buyer)**: لتتبع المشتريات، إدارة الإيجارات، وإدارة العناوين.
+### 2. Frontend
+*   **React 19**: The latest version for building fast and interactive user interfaces.
+*   **Vite**: A super-fast build tool for the project.
+*   **React Router 7**: To manage routes and navigation between pages.
+*   **Context API**: To manage application state (cart, user, products) without complexity.
+*   **Axios**: For real-time, direct connection with the Backend.
 
 ---
 
-## 🏗 بنية المشروع (Project Structure)
+## 🚀 Core Features
 
-### الـ Backend (`/backend`)
-*   `src/auth`: نظام الهوية والتراخيص.
-*   `src/stores`: إدارة المتاجر والتحقق.
-*   `src/products`: الكاتالوج الرقمي (بيع/كراء).
-*   `src/orders`: منطق الشراء المعقد.
-*   `src/wallet`: العمليات المالية.
-*   `prisma/schema.prisma`: هيكل قاعدة البيانات (أكثر من 25 جدولاً).
+### 1. Multi-vendor System
+*   Each seller can create their own store and upload their documents for verification (KYC).
+*   Automatic order splitting system between sellers when purchasing from different stores.
 
-### الـ Frontend (`/frontend`)
-*   `src/pages/shop`: صفحة المتجر مع فلاتر ذكية.
-*   `src/pages/dashboard`: لوحات التحكم الثلاث.
-*   `src/context/AppContext`: إدارة العربة والبيانات الحية.
-*   `src/services`: خدمات التواصل مع الـ API (Axios).
+### 2. Hybrid Marketplace (Sale & Rent)
+*   Full support for selling new and used medical devices.
+*   **Advanced Rental System**: Allows reserving devices for specific periods with calculation of daily rates and security deposits.
 
----
+### 3. Financial Wallet System
+*   A digital wallet for each seller to track their earnings and request withdrawals.
+*   Automatic calculation of platform commissions.
+*   Complete transaction history.
 
-## 🔐 الأمن والتحقق
-*   حماية المسارات باستخدام **Guards** (لا يمكن للبائع دخول لوحة المدير مثلاً).
-*   التحقق من صحة البيانات (Validation) قبل دخولها لقاعدة البيانات.
-*   استخدام **JWT Interceptors** في الواجهة الأمامية لتأمين كل طلب.
+### 4. Triple Dashboards
+*   **Admin Dashboard**: For supervision, store verification, and product approval.
+*   **Seller Dashboard**: For inventory management, order tracking, and earnings withdrawal.
+*   **Buyer Dashboard**: For tracking purchases, managing rentals, and address management.
 
 ---
 
-## 🏁 الخاتمة
-المشروع الآن جاهز للتشغيل كنسخة **MVP (Minimum Viable Product)** كاملة المميزات. تم ربط الواجهات بالسيرفر، وتفعيل دورة الشراء والبيع بالكامل، مما يجعله أساساً قوياً جداً لأي منصة طبية احترافية في السوق الجزائري.
+## 🏗 Project Structure
+
+### Backend (`/backend`)
+*   `src/auth`: Identity and authorization system.
+*   `src/stores`: Store management and verification.
+*   `src/products`: Digital catalog (sale/rent).
+*   `src/orders`: Complex purchasing logic.
+*   `src/wallet`: Financial operations.
+*   `prisma/schema.prisma`: Database schema (over 25 tables).
+
+### Frontend (`/frontend`)
+*   `src/pages/shop`: Shop page with smart filters.
+*   `src/pages/dashboard`: The three dashboards.
+*   `src/context/AppContext`: Cart and live data management.
+*   `src/services`: Services to communicate with the API (Axios).
 
 ---
-**إعداد وتطوير: Antigravity AI Coding Assistant**
-**التاريخ: 2 مايو 2026**
+
+## 🔐 Security and Validation
+*   Route protection using **Guards** (e.g., a seller cannot access the admin dashboard).
+*   Data validation before entering the database.
+*   Use of **JWT Interceptors** in the frontend to secure every request.
+
+---
+
+## 🏁 Conclusion
+The project is now ready to run as a fully-featured **MVP (Minimum Viable Product)**. The interfaces are connected to the server, and the complete buying and selling lifecycle is active, making it a very strong foundation for any professional medical platform in the Algerian market.
+
+---
+**Prepared and Developed by: Antigravity AI Coding Assistant**
+**Date: May 2, 2026**

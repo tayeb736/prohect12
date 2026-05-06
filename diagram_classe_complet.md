@@ -1,11 +1,10 @@
-# 📐 Diagramme de Classes — MediShop Pro
-### Système complet divisé en 6 modules
+# 📐 Class Diagram — MediShop Pro
+## Complete Data Model — 28 Models / 11 Enums
+## Database: PostgreSQL 15 + Prisma 7 ORM
 
 ---
 
-## 🔵 Module 1 — Utilisateurs & Authentification
-
-> Gère tous les comptes, rôles, profils et adresses.
+## Module 1 — Users & Authentication
 
 ```mermaid
 classDiagram
@@ -33,18 +32,29 @@ direction TB
     REJECTED
   }
 
+  class NotificationType {
+    <<enumeration>>
+    ORDER_UPDATE
+    RENTAL_UPDATE
+    PAYMENT
+    MESSAGE
+    REVIEW
+    DISPUTE
+    SYSTEM
+  }
+
   class User {
-    +String id
-    +String email
+    +String id PK
+    +String email UNIQUE
     +String phone
-    +String password
+    +String password bcrypt hashed
     +Role role
     +AccountStatus status
     +Boolean emailVerified
     +Boolean phoneVerified
     +Boolean twoFactorEnabled
     +String twoFactorSecret
-    +String refreshToken
+    +String refreshToken bcrypt hashed
     +String passwordResetToken
     +DateTime passwordResetExpiry
     +DateTime lastLoginAt
@@ -53,11 +63,11 @@ direction TB
   }
 
   class BuyerProfile {
-    +String id
-    +String userId
+    +String id PK
+    +String userId FK
     +String firstName
     +String lastName
-    +String avatar
+    +String avatar S3 URL
     +String organizationType
     +String organizationName
     +String wilaya
@@ -68,11 +78,11 @@ direction TB
   }
 
   class SellerProfile {
-    +String id
-    +String userId
+    +String id PK
+    +String userId FK
     +String firstName
     +String lastName
-    +String avatar
+    +String avatar S3 URL
     +VerificationStatus verificationStatus
     +String rejectionReason
     +DateTime createdAt
@@ -80,19 +90,19 @@ direction TB
   }
 
   class AdminProfile {
-    +String id
-    +String userId
+    +String id PK
+    +String userId FK
     +String firstName
     +String lastName
-    +String avatar
-    +String permissions
+    +String avatar S3 URL
+    +String permissions JSON
     +DateTime createdAt
     +DateTime updatedAt
   }
 
   class Address {
-    +String id
-    +String userId
+    +String id PK
+    +String userId FK
     +String label
     +String firstName
     +String lastName
@@ -107,33 +117,22 @@ direction TB
   }
 
   class WishlistItem {
-    +String id
-    +String userId
-    +String productId
+    +String id PK
+    +String userId FK
+    +String productId FK
     +DateTime createdAt
   }
 
   class Notification {
-    +String id
-    +String userId
+    +String id PK
+    +String userId FK
     +NotificationType type
     +String title
     +String body
-    +String data
+    +String data JSON
     +Boolean isRead
     +DateTime readAt
     +DateTime createdAt
-  }
-
-  class NotificationType {
-    <<enumeration>>
-    ORDER_UPDATE
-    RENTAL_UPDATE
-    PAYMENT
-    MESSAGE
-    REVIEW
-    DISPUTE
-    SYSTEM
   }
 
   User --> Role
@@ -150,20 +149,11 @@ direction TB
 
 ---
 
-## 🟡 Module 2 — Boutiques & Catalogue Produits
-
-> Gère les magasins des vendeurs, leurs documents légaux, les catégories et les produits.
+## Module 2 — Stores & Product Catalog
 
 ```mermaid
 classDiagram
 direction TB
-
-  class VerificationStatus {
-    <<enumeration>>
-    PENDING
-    APPROVED
-    REJECTED
-  }
 
   class ProductType {
     <<enumeration>>
@@ -190,13 +180,13 @@ direction TB
   }
 
   class Store {
-    +String id
-    +String sellerProfileId
+    +String id PK
+    +String sellerProfileId FK
     +String name
-    +String slug
+    +String slug UNIQUE
     +String description
-    +String logo
-    +String banner
+    +String logo S3 URL
+    +String banner S3 URL
     +String wilaya
     +String address
     +String phone
@@ -206,18 +196,18 @@ direction TB
     +Float rating
     +Int totalReviews
     +Int totalSales
-    +Float commissionRate
-    +Boolean isVerified
+    +Float commissionRate percentage
+    +Boolean isVerified KYC approved
     +DateTime createdAt
     +DateTime updatedAt
   }
 
   class StoreDocument {
-    +String id
-    +String storeId
-    +String type
+    +String id PK
+    +String storeId FK
+    +String type RC / Tax / License
     +String name
-    +String fileUrl
+    +String fileUrl S3 URL
     +VerificationStatus status
     +String reviewNote
     +DateTime createdAt
@@ -225,14 +215,14 @@ direction TB
   }
 
   class Category {
-    +String id
+    +String id PK
     +String name
     +String nameAr
-    +String slug
+    +String slug UNIQUE
     +String description
     +String icon
-    +String image
-    +String parentId
+    +String image S3 URL
+    +String parentId FK self-ref
     +Boolean isActive
     +Int sortOrder
     +DateTime createdAt
@@ -240,12 +230,12 @@ direction TB
   }
 
   class Product {
-    +String id
-    +String storeId
-    +String categoryId
+    +String id PK
+    +String storeId FK
+    +String categoryId FK
     +String name
     +String nameAr
-    +String slug
+    +String slug UNIQUE
     +String description
     +ProductType type
     +ProductCondition condition
@@ -256,22 +246,22 @@ direction TB
     +Int yearOfManufacture
     +Float weight
     +String dimensions
-    +Float salePrice
-    +Float comparePrice
-    +Float rentPricePerDay
-    +Float rentPricePerWeek
-    +Float rentPricePerMonth
-    +Float depositAmount
+    +Float salePrice DZD
+    +Float comparePrice DZD
+    +Float rentPricePerDay DZD
+    +Float rentPricePerWeek DZD
+    +Float rentPricePerMonth DZD
+    +Float depositAmount DZD
     +Int stock
     +String sku
     +Int minOrderQty
     +Int maxOrderQty
-    +String specifications
-    +String certifications
+    +String specifications JSON
+    +String certifications CE/FDA JSON
     +String warranty
-    +String metaTitle
-    +String metaDescription
-    +String tags
+    +String metaTitle SEO
+    +String metaDescription SEO
+    +String tags JSON
     +Int viewCount
     +Int soldCount
     +Float rating
@@ -281,9 +271,9 @@ direction TB
   }
 
   class ProductImage {
-    +String id
-    +String productId
-    +String url
+    +String id PK
+    +String productId FK
+    +String url S3 URL
     +String alt
     +Int sortOrder
     +Boolean isPrimary
@@ -291,32 +281,29 @@ direction TB
   }
 
   class ProductDocument {
-    +String id
-    +String productId
-    +String type
+    +String id PK
+    +String productId FK
+    +String type CE/FDA/Manual
     +String name
-    +String fileUrl
+    +String fileUrl S3 URL
     +DateTime createdAt
   }
 
   class RentalCalendar {
-    +String id
-    +String productId
+    +String id PK
+    +String productId FK
     +DateTime startDate
     +DateTime endDate
-    +String rentalId
+    +String rentalId FK
     +Boolean isBlocked
     +String note
     +DateTime createdAt
   }
 
   SellerProfile "1" *-- "0..1" Store : owns
-  Store "1" *-- "*" StoreDocument : submits
-  StoreDocument --> VerificationStatus
-  
+  Store "1" *-- "*" StoreDocument : submits for KYC
   Category "1" o-- "*" Category : parent-child
   Category "1" -- "*" Product : classifies
-
   Store "1" *-- "*" Product : lists
   Product --> ProductType
   Product --> ProductCondition
@@ -328,9 +315,7 @@ direction TB
 
 ---
 
-## 🟠 Module 3 — Commandes & Panier
-
-> Gère le cycle de vie des achats : panier, commande principale, sous-commandes par vendeur et articles.
+## Module 3 — Orders, Cart & Split Payments
 
 ```mermaid
 classDiagram
@@ -357,40 +342,41 @@ direction TB
   }
 
   class Cart {
-    +String id
-    +String sessionId
-    +String userId
-    +String items
+    +String id PK
+    +String sessionId Redis key
+    +String userId FK
+    +String items JSON cached in Redis
     +DateTime createdAt
     +DateTime updatedAt
   }
 
   class Order {
-    +String id
-    +String orderNumber
-    +String buyerProfileId
+    +String id PK
+    +String orderNumber UNIQUE
+    +String buyerProfileId FK
     +OrderStatus status
     +PaymentStatus paymentStatus
-    +String paymentMethod
-    +String paymentIntentId
-    +Float totalAmount
-    +Float shippingAmount
-    +Float taxAmount
-    +Float discountAmount
+    +String paymentMethod Stripe
+    +String paymentIntentId Stripe ID
+    +Float totalAmount DZD
+    +Float shippingAmount DZD
+    +Float taxAmount DZD
+    +Float discountAmount DZD
     +String notes
-    +String shippingAddress
+    +String shippingAddress JSON
+    +String invoiceUrl S3 PDF URL
     +DateTime createdAt
     +DateTime updatedAt
   }
 
   class SubOrder {
-    +String id
-    +String orderId
-    +String storeId
+    +String id PK
+    +String orderId FK
+    +String storeId FK
     +OrderStatus status
-    +Float subtotal
-    +Float commissionAmount
-    +Float sellerAmount
+    +Float subtotal DZD
+    +Float commissionAmount DZD platform fee
+    +Float sellerAmount DZD net earnings
     +String trackingNumber
     +String shippingCarrier
     +String notes
@@ -399,29 +385,29 @@ direction TB
   }
 
   class OrderItem {
-    +String id
-    +String subOrderId
-    +String productId
-    +String productName
-    +String productImage
+    +String id PK
+    +String subOrderId FK
+    +String productId FK
+    +String productName snapshot
+    +String productImage S3 URL
     +Int quantity
-    +Float unitPrice
-    +Float totalPrice
+    +Float unitPrice DZD
+    +Float totalPrice DZD
     +DateTime createdAt
   }
 
   class PromoCode {
-    +String id
-    +String code
+    +String id PK
+    +String code UNIQUE
     +String description
-    +String discountType
+    +String discountType PERCENT/FIXED
     +Float discountValue
-    +Float minOrderAmount
+    +Float minOrderAmount DZD
     +Int maxUses
     +Int usedCount
     +Boolean isActive
     +DateTime expiresAt
-    +String storeId
+    +String storeId FK
     +DateTime createdAt
     +DateTime updatedAt
   }
@@ -429,20 +415,16 @@ direction TB
   BuyerProfile "1" *-- "*" Order : places
   Order --> OrderStatus
   Order --> PaymentStatus
-
-  Order "1" *-- "*" SubOrder : split into
+  Order "1" *-- "*" SubOrder : split by store
   Store "1" -- "*" SubOrder : fulfills
   SubOrder --> OrderStatus
-
   SubOrder "1" *-- "*" OrderItem : contains
   Product "1" -- "*" OrderItem : sold as
 ```
 
 ---
 
-## 🟢 Module 4 — Locations (Rentals)
-
-> Gère le cycle de vie des locations : réservation, durée, dépôt de garantie et retour.
+## Module 4 — Rentals & Deposit Management
 
 ```mermaid
 classDiagram
@@ -458,57 +440,39 @@ direction TB
     OVERDUE
   }
 
-  class PaymentStatus {
-    <<enumeration>>
-    PENDING
-    PAID
-    FAILED
-    REFUNDED
-    PARTIALLY_REFUNDED
-  }
-
   class Rental {
-    +String id
-    +String rentalNumber
-    +String buyerProfileId
+    +String id PK
+    +String rentalNumber UNIQUE
+    +String buyerProfileId FK
     +RentalStatus status
     +PaymentStatus paymentStatus
-    +String paymentMethod
-    +String paymentIntentId
+    +String paymentMethod Stripe
+    +String paymentIntentId Stripe ID
     +DateTime startDate
     +DateTime endDate
     +DateTime returnedAt
     +Int totalDays
-    +Float dailyRate
-    +Float totalRentAmount
-    +Float depositAmount
-    +String depositStatus
-    +String shippingAddress
+    +Float dailyRate DZD
+    +Float totalRentAmount DZD
+    +Float depositAmount DZD Stripe held
+    +String depositStatus HELD/REFUNDED/WITHHELD
+    +String shippingAddress JSON
     +String notes
-    +String contractUrl
+    +String contractUrl S3 PDF URL
     +DateTime createdAt
     +DateTime updatedAt
   }
 
   class RentalItem {
-    +String id
-    +String rentalId
-    +String productId
-    +String productName
-    +String productImage
+    +String id PK
+    +String rentalId FK
+    +String productId FK
+    +String productName snapshot
+    +String productImage S3 URL
     +Int quantity
-    +Float unitPrice
-    +Float totalPrice
-  }
-
-  class RentalCalendar {
-    +String id
-    +String productId
-    +DateTime startDate
-    +DateTime endDate
-    +String rentalId
-    +Boolean isBlocked
-    +String note
+    +Float unitPrice DZD
+    +Float totalPrice DZD
+    +DateTime createdAt
   }
 
   BuyerProfile "1" *-- "*" Rental : rents
@@ -521,9 +485,7 @@ direction TB
 
 ---
 
-## 🔴 Module 5 — Finance, Portefeuille & Transactions
-
-> Gère les wallets (vendeur/acheteur), toutes les transactions financières et les demandes de retrait.
+## Module 5 — Finance, Wallet & Commission System
 
 ```mermaid
 classDiagram
@@ -539,49 +501,40 @@ direction TB
     WITHDRAWAL
   }
 
-  class PaymentStatus {
-    <<enumeration>>
-    PENDING
-    PAID
-    FAILED
-    REFUNDED
-    PARTIALLY_REFUNDED
-  }
-
   class Wallet {
-    +String id
-    +String buyerProfileId
-    +String sellerProfileId
-    +Float balance
-    +Float pendingBalance
-    +Float totalEarned
-    +Float totalWithdrawn
-    +String currency
+    +String id PK
+    +String buyerProfileId FK
+    +String sellerProfileId FK
+    +Float balance DZD available
+    +Float pendingBalance DZD locked
+    +Float totalEarned DZD all-time
+    +Float totalWithdrawn DZD all-time
+    +String currency DZD
     +DateTime createdAt
     +DateTime updatedAt
   }
 
   class Transaction {
-    +String id
-    +String walletId
-    +String orderId
-    +String rentalId
+    +String id PK
+    +String walletId FK
+    +String orderId FK
+    +String rentalId FK
     +TransactionType type
-    +Float amount
-    +Float commissionAmount
-    +String currency
+    +Float amount DZD
+    +Float commissionAmount DZD platform fee
+    +String currency DZD
     +PaymentStatus status
-    +String paymentGatewayId
+    +String paymentGatewayId Stripe ID
     +String description
-    +String metadata
+    +String metadata JSON
     +DateTime createdAt
   }
 
   class Withdrawal {
-    +String id
-    +String walletId
-    +Float amount
-    +String status
+    +String id PK
+    +String walletId FK
+    +Float amount DZD
+    +String status PENDING/COMPLETED/REJECTED
     +String bankName
     +String accountNumber
     +String accountHolder
@@ -593,9 +546,9 @@ direction TB
   }
 
   class PlatformSetting {
-    +String id
-    +String key
-    +String value
+    +String id PK
+    +String key UNIQUE
+    +String value JSON
     +String description
     +DateTime updatedAt
   }
@@ -606,15 +559,13 @@ direction TB
   Wallet "1" *-- "*" Withdrawal : requests
   Transaction --> TransactionType
   Transaction --> PaymentStatus
-  Order "1" -- "*" Transaction : triggers
-  Rental "1" -- "*" Transaction : triggers
+  Order "1" -- "*" Transaction : triggers via Stripe
+  Rental "1" -- "*" Transaction : triggers via Stripe
 ```
 
 ---
 
-## 🟣 Module 6 — Support, Avis & Messagerie
-
-> Gère les avis clients, les litiges (disputes), la messagerie interne et les messages de litige.
+## Module 6 — Support, Reviews & Messaging
 
 ```mermaid
 classDiagram
@@ -629,25 +580,26 @@ direction TB
   }
 
   class Review {
-    +String id
-    +String userId
-    +String productId
-    +String storeId
-    +Int rating
+    +String id PK
+    +String userId FK
+    +String productId FK
+    +String storeId FK
+    +String orderId FK verified purchase
+    +Int rating 1-5
     +String title
     +String comment
-    +Boolean isVerified
-    +Boolean isHidden
+    +Boolean isVerified purchased product
+    +Boolean isHidden admin hidden
     +String sellerReply
     +DateTime createdAt
     +DateTime updatedAt
   }
 
   class Dispute {
-    +String id
-    +String openedById
-    +String orderId
-    +String rentalId
+    +String id PK
+    +String openedById FK buyer userId
+    +String orderId FK
+    +String rentalId FK
     +DisputeStatus status
     +String subject
     +String description
@@ -658,28 +610,28 @@ direction TB
   }
 
   class DisputeMessage {
-    +String id
-    +String disputeId
-    +String senderId
+    +String id PK
+    +String disputeId FK
+    +String senderId FK userId
     +String message
-    +String attachments
+    +String attachments S3 URLs JSON
     +DateTime createdAt
   }
 
   class Conversation {
-    +String id
-    +String productId
+    +String id PK
+    +String productId FK context
     +DateTime createdAt
     +DateTime updatedAt
   }
 
   class Message {
-    +String id
-    +String conversationId
-    +String senderId
-    +String receiverId
+    +String id PK
+    +String conversationId FK
+    +String senderId FK userId
+    +String receiverId FK userId
     +String content
-    +String attachments
+    +String attachments S3 URLs JSON
     +Boolean isRead
     +DateTime readAt
     +DateTime createdAt
@@ -688,11 +640,9 @@ direction TB
   User "1" -- "*" Review : writes
   Product "0..1" -- "*" Review : rated by
   Store "0..1" -- "*" Review : rated by
-
   User "1" -- "*" Dispute : opens
   Dispute --> DisputeStatus
   Dispute "1" *-- "*" DisputeMessage : contains
-
   Conversation "1" *-- "*" Message : holds
   User "1" -- "*" Message : sends
   User "1" -- "*" Message : receives
@@ -700,14 +650,14 @@ direction TB
 
 ---
 
-## 📊 Résumé du Système
+## 📊 Complete Data Model Summary
 
-| Module | Entités | Enums |
-|--------|---------|-------|
-| 🔵 Utilisateurs & Auth | `User`, `BuyerProfile`, `SellerProfile`, `AdminProfile`, `Address`, `WishlistItem`, `Notification` | `Role`, `AccountStatus`, `VerificationStatus`, `NotificationType` |
-| 🟡 Boutiques & Catalogue | `Store`, `StoreDocument`, `Category`, `Product`, `ProductImage`, `ProductDocument`, `RentalCalendar` | `ProductType`, `ProductCondition`, `ProductStatus` |
-| 🟠 Commandes & Panier | `Cart`, `Order`, `SubOrder`, `OrderItem`, `PromoCode` | `OrderStatus`, `PaymentStatus` |
-| 🟢 Locations | `Rental`, `RentalItem`, `RentalCalendar` | `RentalStatus`, `PaymentStatus` |
-| 🔴 Finance | `Wallet`, `Transaction`, `Withdrawal`, `PlatformSetting` | `TransactionType`, `PaymentStatus` |
-| 🟣 Support & Messagerie | `Review`, `Dispute`, `DisputeMessage`, `Conversation`, `Message` | `DisputeStatus` |
-| **Total** | **28 Modèles** | **11 Enums** |
+| Module | Models | Enums | Key Tech |
+|--------|--------|-------|---------|
+| 🔵 Users & Auth | 7 models | 4 enums | bcrypt, JWT HttpOnly, Rate Limit Redis |
+| 🟡 Stores & Catalog | 7 models | 3 enums | S3 images/docs, KYC verification |
+| 🟠 Orders & Cart | 5 models | 2 enums | Redis Cart, Stripe Split Payments |
+| 🟢 Rentals | 3 models | 1 enum | Stripe Deposit, S3 Contract PDF |
+| 🔴 Finance | 4 models | 1 enum | Commission system, Stripe, Wallet |
+| 🟣 Support & Messaging | 5 models | 1 enum | S3 attachments, Dispute resolution |
+| **Total** | **28 Models** | **11 Enums** | **PostgreSQL 15 + Prisma 7** |

@@ -1,9 +1,9 @@
-# المخطط الشامل لقاعدة البيانات (Class Diagram) - MediShop Pro
+# Comprehensive Database Schema (Class Diagram) - MediShop Pro
 
-نظراً لحجم النظام وتعدد العلاقات، تم تقسيم المخطط الشامل إلى **5 أجزاء رئيسية** ليكون أكثر وضوحاً وقابلية للقراءة. يعتمد هذا المخطط على بنية قاعدة البيانات (Prisma Schema) الخاصة بالخادم (Backend).
+Due to the size of the system and the multitude of relationships, the comprehensive diagram has been divided into **5 main parts** to be clearer and more readable. This diagram is based on the backend database structure (Prisma Schema).
 
-## 1. إدارة المستخدمين والملفات الشخصية (Users & Profiles)
-يوضح هذا المخطط الكيانات الأساسية للمستخدمين، ملفاتهم الشخصية حسب الصلاحيات (مشتري، بائع، مسؤول)، وعناوينهم.
+## 1. Users & Profiles Management
+This diagram illustrates the core user entities, their profiles based on roles (Buyer, Seller, Admin), and their addresses.
 
 ```mermaid
 classDiagram
@@ -75,8 +75,8 @@ classDiagram
 
 ---
 
-## 2. المتاجر وإدارة الكتالوج (Store & Catalog)
-يوضح هذا المخطط بنية المتاجر، الوثائق، الفئات (التصنيفات)، والمنتجات بكل تفاصيلها (صور، وثائق، روزنامة الحجز).
+## 2. Store & Catalog Management
+This diagram illustrates the structure of stores, documents, categories, and products with all their details (images, documents, rental calendar).
 
 ```mermaid
 classDiagram
@@ -151,8 +151,8 @@ classDiagram
 
 ---
 
-## 3. الطلبات والإيجارات (Orders & Rentals)
-يوضح دورة حياة الشراء (Orders) والإيجار (Rentals)، وتقسيم الطلب الرئيسي إلى طلبات فرعية (SubOrders) حسب المتاجر.
+## 3. Orders & Rentals
+This diagram illustrates the lifecycle of purchases (Orders) and rentals (Rentals), and the division of the main order into sub-orders based on stores.
 
 ```mermaid
 classDiagram
@@ -217,8 +217,8 @@ classDiagram
 
 ---
 
-## 4. المحفظة والمعاملات المالية (Finance & Wallets)
-يخص كل ما يتعلق بالأموال في المنصة، من محافظ (للبائع والمشتري)، معاملات مالية، وعمليات السحب.
+## 4. Finance & Wallets
+This covers everything related to funds on the platform, from wallets (for seller and buyer), financial transactions, and withdrawals.
 
 ```mermaid
 classDiagram
@@ -262,8 +262,8 @@ classDiagram
 
 ---
 
-## 5. الدعم، التقييم والتواصل (Support & Communication)
-يتضمن نظام الرسائل (Chat)، التقييمات (Reviews)، والنزاعات (Disputes)، بالإضافة للمنبهات.
+## 5. Support, Reviews & Communication
+Includes the messaging system (Chat), reviews, disputes, as well as notifications.
 
 ```mermaid
 classDiagram

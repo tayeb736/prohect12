@@ -1,107 +1,107 @@
-# مشروع منصة المعدات الطبية (B2B Multi-Vendor Marketplace)
-## الوثيقة الشاملة (Master Plan & Roadmap)
+# Medical Equipment Platform Project (B2B Multi-Vendor Marketplace)
+## Comprehensive Master Plan & Roadmap
 
-هذه الوثيقة تحتوي على كل التفاصيل التقنية، التنظيمية، والأمنية لبناء منصة إلكترونية ضخمة (شبيهة بأمازون) مخصصة لبيع وتأجير المعدات الطبية بين الشركات (B2B) والقطاعات الصحية.
-
----
-
-## 1. الهيكلية التقنية (Tech Stack)
-
-تم اختيار أحدث وأقوى التقنيات لضمان تحمل النظام للضغط العالي (Scalability) والأمان:
-
-- **الواجهة الأمامية (Frontend - Storefront):** `React.js` (أو `Next.js` لتحسين الـ SEO) + `TailwindCSS` للتصميم.
-- **لوحات التحكم (Dashboards):** `React` مع `Vite`، وإدارة الحالة عبر `Redux Toolkit` أو `Zustand`.
-- **الواجهة الخلفية (Backend):** `NestJS` (إطار عمل قوي جداً يعتمد على TypeScript والبنية التركيبية Modular).
-- **قاعدة البيانات (Database):** `PostgreSQL` (الأفضل للعلاقات المعقدة والبيانات المالية) مع `Prisma ORM` أو `TypeORM`.
-- **التخزين المؤقت (Caching):** `Redis` (لتسريع الموقع وتخزين سلات التسوق).
-- **التخزين السحابي (Storage):** `AWS S3` أو `Cloudinary` (لتخزين صور المنتجات، والملفات الطبية، والفواتير بأسلوب آمن).
+This document contains all the technical, organizational, and security details for building a large-scale e-commerce platform (similar to Amazon) dedicated to selling and renting medical equipment between businesses (B2B) and healthcare sectors.
 
 ---
 
-## 2. الأدوار والصلاحيات (Roles & Access Control)
+## 1. Tech Stack
 
-النظام مقسم إلى 3 أدوار رئيسية، لكل دور بيئته الخاصة:
+The latest and most powerful technologies have been chosen to ensure the system handles high traffic (Scalability) and security:
 
-### أ. الإدارة العليا (Super Admin)
-- **KYC (التحقق من الهوية):** مراجعة مستندات البائعين الجدد (السجل التجاري، رخص وزارة الصحة) والموافقة عليهم أو رفضهم.
-- **إدارة العمولات:** تحديد نسبة عمولة المنصة لكل عملية بيع أو تأجير.
-- **مركز النزاعات (Disputes):** الفصل في المشاكل بين البائع والمشتري (مثل تأخر الشحن أو تلف جهاز مستأجر).
-- **الرقابة العامة:** مراقبة الأرباح، حظر الحسابات المخالفة، وإصدار تقارير الأداء.
-
-### ب. البائع (Seller)
-- **لوحة تحكم خاصة:** لمتابعة المبيعات، الطلبات المعلقة، وإضافة أرقام التتبع.
-- **إدارة المنتجات (بيع/كراء):** إضافة الأجهزة، تحديد المواصفات (جديد/مستعمل)، رفع شهادات الجودة (CE/FDA).
-- **نظام الكراء (Renting Calendar):** تحديد الأيام المتاحة للإيجار، وتحديد "مبلغ التأمين" (Deposit) الذي يدفعه المستأجر.
-- **المحفظة المالية (Wallet):** رؤية الأرباح المعلقة (Pending) والأرباح القابلة للسحب (Available).
-
-### ج. المشتري (Buyer - عيادة، مستشفى، طبيب)
-- **البحث الذكي:** فلترة دقيقة حسب التخصص الطبي، العلامة التجارية، السعر، والحالة.
-- **نظام الحجز (للكراء):** اختيار تواريخ الإيجار، دفع مبلغ التأمين ورسوم الإيجار.
-- **تتبع الطلبات:** تتبع الشحن خطوة بخطوة.
-- **الفواتير:** تحميل فواتير ضريبية (PDF) لكل عملية شراء أو إيجار.
+- **Frontend (Storefront):** `React.js` (or `Next.js` for better SEO) + `TailwindCSS` for styling.
+- **Dashboards:** `React` with `Vite`, and state management via `Redux Toolkit` or `Zustand`.
+- **Backend:** `NestJS` (A very powerful framework based on TypeScript and a Modular architecture).
+- **Database:** `PostgreSQL` (Best for complex relationships and financial data) with `Prisma ORM` or `TypeORM`.
+- **Caching:** `Redis` (To speed up the site and store shopping carts).
+- **Cloud Storage:** `AWS S3` or `Cloudinary` (To securely store product images, medical files, and invoices).
 
 ---
 
-## 3. النظام المالي المعقد (Financial Flow)
+## 2. Roles & Access Control
 
-بما أن المنصة متعددة البائعين (Multi-vendor)، فالنظام المالي هو العصب:
+The system is divided into 3 main roles, each with its own environment:
 
-1. **المدفوعات المجزأة (Split Payments):** عند دفع المشتري لطلب يحتوي على منتجات من 3 بائعين مختلفين، يقوم النظام (برمجياً) بتقسيم المبلغ، خصم عمولة المنصة، وتوزيع الباقي على محافظ البائعين.
-2. **نظام التأمين للكراء (Security Deposit):**
-   - يدفع المشتري (مثلاً 1000$ كإيجار + 500$ كتأمين).
-   - يتم حجز التأمين، وعند إرجاع الجهاز سليماً، يتم رد التأمين (Refund) تلقائياً للمشتري.
-3. **المحفظة (Wallet System):** الأرباح تبقى "معلقة" في محفظة البائع حتى يقوم المشتري بتأكيد استلام المنتج، وذلك لحماية حقوق الطرفين.
+### A. Super Admin                   
+- **KYC (Identity Verification):** Review new sellers' documents (Commercial Register, Ministry of Health licenses) and approve or reject them.
+- **Commission Management:** Define the platform's commission rate for each sale or rental transaction.
+- **Disputes Center:** Resolve issues between the seller and the buyer (e.g., delayed shipping or damage to a rented device).
+- **General Oversight:** Monitor profits, ban violating accounts, and issue performance reports.
 
----
+### B. Seller
+- **Private Dashboard:** To track sales, pending orders, and add tracking numbers.
+- **Product Management (Sale/Rent):** Add devices, specify condition (New/Used), and upload quality certificates (CE/FDA).
+- **Renting Calendar:** Specify days available for rent and the "Security Deposit" to be paid by the renter.
+- **Financial Wallet:** View pending earnings and available earnings ready for withdrawal.
 
-## 4. الحماية والأمان (Security Master Plan)
-
-بيانات القطاع الصحي والمدفوعات تتطلب أماناً عالي المستوى:
-
-- **Authentication:** نظام `JWT` مع `HttpOnly Cookies` لمنع سرقة الجلسات.
-- **Authorization:** `Role-based Guards` في NestJS للتأكد من أن كل مستخدم يصل فقط للبيانات المسموح له بها.
-- **Data Encryption:** تشفير كلمات المرور باستخدام `Bcrypt`، وتشفير البيانات البنكية أو الوثائق الحساسة.
-- **Rate Limiting:** منع هجمات حجب الخدمة (DDoS) وتقييد عدد المحاولات الفاشلة لتسجيل الدخول.
-- **Validation:** استخدام `class-validator` في NestJS لمنع الثغرات مثل `SQL Injection` و `XSS`.
-
----
-
-## 5. اللوجستيات والشحن (Logistics)
-
-- **بوالص الشحن المتعددة:** الطلب الواحد الذي يحتوي على أجهزة من بائعين مختلفين يتم تقسيمه إلى طلبات فرعية (Sub-orders) لإنشاء بوليصة شحن لكل بائع على حدة.
-- **الشحن المتخصص:** دعم خيارات الشحن للأجهزة الثقيلة أو الحساسة للحرارة.
+### C. Buyer (Clinic, Hospital, Doctor)
+- **Smart Search:** Precise filtering by medical specialty, brand, price, and condition.
+- **Booking System (for Rent):** Select rental dates, pay the security deposit and rental fees.
+- **Order Tracking:** Track shipping step-by-step.
+- **Invoices:** Download tax invoices (PDF) for each purchase or rental.
 
 ---
 
-## 6. خريطة الطريق (Roadmap) للتطوير
+## 3. Complex Financial Flow
 
-لضمان نجاح المشروع، يجب بناؤه على مراحل (Agile/MVP):
+Since the platform is multi-vendor, the financial system is the core:
 
-- **المرحلة 1: هندسة قاعدة البيانات (أسبوع - أسبوعان)**
-  - بناء Schema لقاعدة البيانات (PostgreSQL) باستخدام Prisma (الجداول: Users, Stores, Products, Orders, Rentals, Transactions).
-  - إعداد نظام التسجيل (Auth) والصلاحيات.
-
-- **المرحلة 2: نظام الكتالوج (3 أسابيع)**
-  - برمجة الـ API لإضافة وعرض المنتجات.
-  - فصل منطق "البيع" عن "الكراء".
-  - بناء تقويم الكراء ومبلغ التأمين.
-
-- **المرحلة 3: السلة والطلبات (أسبوعان - 3 أسابيع)**
-  - ربط السلة (Cart) بـ Redis.
-  - منطق تقسيم الطلب (Split Orders) عند الشراء من عدة بائعين.
-
-- **المرحلة 4: بوابات الدفع والمالية (أسبوعان)**
-  - دمج بوابة الدفع (Stripe أو بوابة محلية).
-  - برمجة نظام العمولات، المحافظ، واسترجاع التأمين.
-
-- **المرحلة 5: لوحات التحكم (Dashboards) (بالتوازي مع الـ Frontend)**
-  - بناء الواجهات الخاصة بالـ Admin والـ Seller والـ Buyer وربطها بالـ APIs.
-
-- **المرحلة 6: الإطلاق والأمان (أسبوعان)**
-  - اختبار الاختراق (Penetration testing).
-  - تحسين الأداء (SEO & Caching).
-  - رفع المشروع على خوادم سحابية (AWS / DigitalOcean / Vercel).
+1. **Split Payments:** When a buyer pays for an order containing products from 3 different sellers, the system (programmatically) splits the amount, deducts the platform's commission, and distributes the rest to the sellers' wallets.
+2. **Security Deposit System (for Rent):**
+   - The buyer pays (e.g., $1000 for rent + $500 as a deposit).
+   - The deposit is held, and upon returning the device in good condition, the deposit is automatically refunded to the buyer.
+3. **Wallet System:** Earnings remain "Pending" in the seller's wallet until the buyer confirms receipt of the product, to protect the rights of both parties.
 
 ---
 
-> **ملاحظة للمطور:** هذا المشروع يعتبر من فئة "Enterprise" ويتطلب التركيز الشديد على هندسة قاعدة البيانات في المرحلة الأولى، لأن أي خطأ في علاقات الجداول المالية سيصعب تعديله لاحقاً.
+## 4. Security Master Plan
+
+Healthcare sector data and payments require high-level security:
+
+- **Authentication:** `JWT` system with `HttpOnly Cookies` to prevent session hijacking.
+- **Authorization:** `Role-based Guards` in NestJS to ensure each user only accesses data they are permitted to.
+- **Data Encryption:** Encrypt passwords using `Bcrypt`, and encrypt banking data or sensitive documents.
+- **Rate Limiting:** Prevent DDoS attacks and limit the number of failed login attempts.
+- **Validation:** Use `class-validator` in NestJS to prevent vulnerabilities like `SQL Injection` and `XSS`.
+
+---
+
+## 5. Logistics and Shipping
+
+- **Multiple Waybills:** A single order containing devices from different sellers is split into Sub-orders to generate a separate shipping waybill for each seller.
+- **Specialized Shipping:** Support shipping options for heavy or temperature-sensitive devices.
+
+---
+
+## 6. Development Roadmap
+
+To ensure the project's success, it must be built in phases (Agile/MVP):
+
+- **Phase 1: Database Architecture (1 - 2 weeks)**
+  - Build the Database Schema (PostgreSQL) using Prisma (Tables: Users, Stores, Products, Orders, Rentals, Transactions).
+  - Set up the Registration system (Auth) and permissions.
+
+- **Phase 2: Catalog System (3 weeks)**
+  - Program the API to add and display products.
+  - Separate the logic of "Selling" from "Renting".
+  - Build the rental calendar and security deposit system.
+
+- **Phase 3: Cart and Orders (2 - 3 weeks)**
+  - Connect the Cart to Redis.
+  - Implement the Split Orders logic when purchasing from multiple sellers.
+
+- **Phase 4: Payment Gateways and Finance (2 weeks)**
+  - Integrate a payment gateway (Stripe or a local gateway).
+  - Program the commission system, wallets, and deposit refunds.
+
+- **Phase 5: Dashboards (In parallel with Frontend)**
+  - Build interfaces for the Admin, Seller, and Buyer and connect them to the APIs.
+
+- **Phase 6: Launch and Security (2 weeks)**
+  - Penetration testing.
+  - Performance optimization (SEO & Caching).
+  - Deploy the project to cloud servers (AWS / DigitalOcean / Vercel).
+
+---
+
+> **Note for the Developer:** This project is considered "Enterprise" grade and requires intense focus on database architecture in the first phase, because any mistake in financial table relationships will be difficult to modify later.
