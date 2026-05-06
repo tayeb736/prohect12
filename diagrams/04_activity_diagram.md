@@ -1,5 +1,5 @@
 # 🏃 Activity Diagrams — MediShop Pro
-## End-to-End Workflow Flows
+## End-to-End Workflows (PostgreSQL + Redis + Stripe + S3 + KYC)
 
 ---
 
@@ -10,199 +10,206 @@ flowchart TD
   Start([🟢 Start]) --> A1[Visit MediShop Pro platform]
   A1 --> A2[Click Register as Buyer]
   A2 --> A3[Fill form: email, password, org type]
-  A3 --> A4{Email already exists?}
-  A4 -- Yes --> A5[Show error: Email already used]
-  A5 --> A3
-  A4 -- No --> A6[Create account — status: PENDING]
-  A6 --> A7[Send verification email]
-  A7 --> A8[Buyer clicks verification link]
-  A8 --> A9[Account ACTIVE ✅]
-  A9 --> A10[Browse product catalog]
-  A10 --> A11[Apply filters: category / price / wilaya]
-  A11 --> A12[Open product detail page]
-  A12 --> A13{Product type?}
-  A13 -- SALE --> A14[Add to Cart]
-  A13 -- RENT --> A15[Select rental dates]
-  A15 --> A16{Dates available?}
-  A16 -- No --> A17[Choose different dates]
-  A17 --> A15
-  A16 -- Yes --> A14
-  A14 --> A18[Proceed to Checkout]
-  A18 --> A19[Select shipping address]
-  A19 --> A20[Apply promo code?]
-  A20 -- Yes --> A21{Code valid?}
-  A21 -- No --> A22[Show error]
-  A22 --> A20
-  A21 -- Yes --> A23[Apply discount]
-  A23 --> A24[Confirm & Place Order]
-  A20 -- No --> A24
-  A24 --> A25[Order created ✅]
-  A25 --> A26[Receive confirmation notification]
-  A26 --> End([🔴 End])
+  A3 --> A4[class-validator sanitizes inputs]
+  A4 --> A5{Email already exists\nin PostgreSQL?}
+  A5 -- Yes --> A6[Show error: Email already used]
+  A6 --> A3
+  A5 -- No --> A7[bcrypt.hash password]
+  A7 --> A8[Create User in PostgreSQL\nstatus: PENDING]
+  A8 --> A9[Send verification email\nvia SendGrid]
+  A9 --> A10[Buyer clicks verification link]
+  A10 --> A11[Account ACTIVE ✅]
+  A11 --> A12[Browse product catalog]
+  A12 --> A13[Apply filters: category / price / wilaya]
+  A13 --> A14[Add products to Cart\nCart stored in Redis TTL:24h]
+  A14 --> A15[Proceed to Checkout]
+  A15 --> A16[Select shipping address]
+  A15 --> A17[Apply promo code?]
+  A17 -- Yes --> A18{Code valid\nin PostgreSQL?}
+  A18 -- No --> A19[Show error]
+  A19 --> A17
+  A18 -- Yes --> A20[Apply discount]
+  A20 --> A21[Create Stripe PaymentIntent]
+  A17 -- No --> A21
+  A21 --> A22[Buyer confirms payment\nvia Stripe.js]
+  A22 --> A23{Payment successful?}
+  A23 -- No --> A24[Show payment error]
+  A24 --> A21
+  A23 -- Yes --> A25[Order created in PostgreSQL ✅]
+  A25 --> A26[Clear cart from Redis]
+  A26 --> A27[Generate Tax Invoice PDF → S3]
+  A27 --> A28[Email confirmation + invoice link\nvia SendGrid]
+  A28 --> End([🔴 End])
 ```
 
 ---
 
-## Activity 2 — Seller Onboarding & Product Listing
+## Activity 2 — Seller KYC Onboarding & Product Listing
 
 ```mermaid
 flowchart TD
   Start([🟢 Start]) --> B1[Register as Seller]
-  B1 --> B2[Fill seller details & verify email]
-  B2 --> B3[Access Seller Dashboard]
-  B3 --> B4[Create Store: name, wilaya, description]
-  B4 --> B5[Upload legal documents: RC, tax ID, NIS]
-  B5 --> B6[Submit store for admin review]
-  B6 --> B7{Admin reviews store}
-  B7 -- Rejected --> B8[Receive rejection notification]
-  B8 --> B9[Fix documents & resubmit]
-  B9 --> B7
-  B7 -- Approved --> B10[Store isVerified = true ✅]
-  B10 --> B11[Add new product]
-  B11 --> B12[Fill: name, category, type, price, stock]
-  B12 --> B13[Upload product images]
-  B13 --> B14[Set specifications & certifications]
-  B14 --> B15{Product type?}
-  B15 -- RENT or BOTH --> B16[Set rental prices: daily/weekly/monthly]
-  B16 --> B17[Set deposit amount]
-  B17 --> B18[Submit for admin review]
-  B15 -- SALE only --> B18
-  B18 --> B19{Admin reviews product}
-  B19 -- Rejected --> B20[Edit product & resubmit]
-  B20 --> B19
-  B19 -- Approved --> B21[Product ACTIVE on platform ✅]
-  B21 --> B22[Product visible to buyers]
-  B22 --> End([🔴 End])
+  B1 --> B2[Fill form → bcrypt hash password]
+  B2 --> B3[Verify email via SendGrid]
+  B3 --> B4[Access Seller Dashboard]
+  B4 --> B5[Create Store: name, wilaya, taxId]
+  B5 --> B6[Upload KYC documents\nRC, tax, health license]
+  B6 --> B7[Files uploaded to AWS S3 / Cloudinary]
+  B7 --> B8[StoreDocuments saved in PostgreSQL\nstatus: PENDING]
+  B8 --> B9[Submit store for Admin review]
+  B9 --> B10{Admin KYC Review}
+  B10 -- Rejected --> B11[Email Seller — rejection reason\nvia SendGrid]
+  B11 --> B12[Fix documents & re-upload to S3]
+  B12 --> B10
+  B10 -- Approved --> B13[Store isVerified = true\nPostgreSQL updated ✅]
+  B13 --> B14[Email Seller — "Store approved" via SendGrid]
+  B14 --> B15[Add new product]
+  B15 --> B16[Fill product details + pricing]
+  B16 --> B17[Upload images → AWS S3]
+  B17 --> B18[Upload certifications PDF → S3\nCE / FDA documents]
+  B18 --> B19{Product type?}
+  B19 -- RENT or BOTH --> B20[Set rental prices\ndaily/weekly/monthly + deposit]
+  B20 --> B21[Submit for Admin review\nstatus: PENDING_REVIEW]
+  B19 -- SALE only --> B21
+  B21 --> B22{Admin reviews product}
+  B22 -- Rejected --> B23[Edit product & resubmit]
+  B23 --> B22
+  B22 -- Approved --> B24[Product ACTIVE on platform ✅]
+  B24 --> End([🔴 End])
 ```
 
 ---
 
-## Activity 3 — Order Processing Workflow
+## Activity 3 — Multi-Vendor Order Processing (Stripe + Redis + Split Payment)
 
 ```mermaid
 flowchart TD
-  Start([🟢 Start]) --> C1[Buyer places order]
-  C1 --> C2[System validates all products are ACTIVE]
-  C2 --> C3{All products available?}
+  Start([🟢 Start]) --> C1[Buyer loads cart from Redis]
+  C1 --> C2[Verify all products ACTIVE\ncheck PostgreSQL stock]
+  C2 --> C3{All products valid?}
   C3 -- No --> C4[Notify Buyer — item unavailable]
   C4 --> End1([🔴 End])
-  C3 -- Yes --> C5[Group items by Store]
-  C5 --> C6[Create main Order + SubOrders]
-  C6 --> C7[Decrement stock for each product]
-  C7 --> C8[Add seller amounts to pendingBalance]
-  C8 --> C9[Send notifications to all sellers]
-  C9 --> C10[Seller confirms & processes SubOrder]
-  C10 --> C11[Seller ships — adds tracking number]
-  C11 --> C12[Notify Buyer: Order shipped 🚚]
-  C12 --> C13{Buyer confirms delivery?}
-  C13 -- No, issue --> C14[Buyer opens dispute]
-  C14 --> C15[Admin resolves dispute]
-  C15 --> End2([🔴 End])
-  C13 -- Yes --> C16[Order status → DELIVERED]
-  C16 --> C17[Move seller funds: pendingBalance → balance]
-  C17 --> C18[Transaction marked as PAID]
-  C18 --> C19[Seller can request withdrawal]
-  C19 --> End3([🔴 End])
+  C3 -- Yes --> C5[Create Stripe PaymentIntent\ntotal amount]
+  C5 --> C6[Buyer confirms payment\nvia Stripe.js]
+  C6 --> C7{Stripe confirms payment?}
+  C7 -- No --> C8[Show payment failure]
+  C8 --> End2([🔴 End])
+  C7 -- Yes --> C9[Group cart items by Store]
+  C9 --> C10[For each Store:\nCreate SubOrder in PostgreSQL]
+  C10 --> C11[Create OrderItems in PostgreSQL]
+  C11 --> C12[Decrement Product.stock in PostgreSQL]
+  C12 --> C13[Calculate commission\ncommissionRate × subtotal]
+  C13 --> C14[Add sellerAmount to\nSeller pendingBalance in PostgreSQL]
+  C14 --> C15[Create Transaction record\nstatus: PENDING]
+  C15 --> C16[Email Seller via SendGrid\nNew order received 📦]
+  C16 --> C17{More stores?}
+  C17 -- Yes --> C10
+  C17 -- No --> C18[Create main Order in PostgreSQL\npaymentStatus: PAID]
+  C18 --> C19[Delete cart from Redis]
+  C19 --> C20[Generate Tax Invoice PDF]
+  C20 --> C21[Upload invoice to S3]
+  C21 --> C22[Email Buyer: confirmation + invoice URL]
+  C22 --> End3([🔴 End])
 ```
 
 ---
 
-## Activity 4 — Equipment Rental Lifecycle
+## Activity 4 — Equipment Rental with Stripe Deposit
 
 ```mermaid
 flowchart TD
   Start([🟢 Start]) --> D1[Buyer selects RENT product]
-  D1 --> D2[View rental availability calendar]
-  D2 --> D3[Select startDate and endDate]
-  D3 --> D4{Dates available in RentalCalendar?}
+  D1 --> D2[View rental availability calendar\nfrom PostgreSQL RentalCalendar]
+  D2 --> D3[Select startDate & endDate]
+  D3 --> D4{Dates available\nin RentalCalendar?}
   D4 -- No --> D5[Choose different dates]
   D5 --> D3
-  D4 -- Yes --> D6[Confirm rental + deposit amount]
-  D6 --> D7[System creates Rental record]
-  D7 --> D8[Block dates in RentalCalendar]
-  D8 --> D9[Generate contract PDF]
-  D9 --> D10[Notify Seller — new rental request]
-  D10 --> D11{Seller confirms?}
-  D11 -- No --> D12[Rental CANCELLED — dates freed]
-  D12 --> End1([🔴 End])
-  D11 -- Yes --> D13[Rental CONFIRMED ✅]
-  D13 --> D14[Rental period starts — status: ACTIVE]
-  D14 --> D15{Equipment returned on time?}
-  D15 -- Yes --> D16[Mark as RETURNED]
-  D16 --> D17{Any damage?}
-  D17 -- No --> D18[Refund full deposit to Buyer]
-  D18 --> D19[Free calendar dates]
-  D19 --> End2([🔴 End])
-  D17 -- Yes --> D20[Withhold deposit]
-  D20 --> D21[Dispute may be opened]
-  D21 --> End3([🔴 End])
-  D15 -- No --> D22[Status → OVERDUE]
-  D22 --> D23[Notify Buyer & Seller — equipment overdue]
-  D23 --> D24[Daily overdue penalties applied]
-  D24 --> D25[Equipment eventually returned]
-  D25 --> D16
+  D4 -- Yes --> D6[Calculate total:\nrentAmount + depositAmount]
+  D6 --> D7[Create Stripe charge\nrent + deposit combined]
+  D7 --> D8{Payment successful?}
+  D8 -- No --> D9[Show payment error]
+  D9 --> End1([🔴 End])
+  D8 -- Yes --> D10[Create Rental in PostgreSQL\nstatus: PENDING]
+  D10 --> D11[Block dates in RentalCalendar\nisBlocked: true]
+  D11 --> D12[Generate Rental Contract PDF]
+  D12 --> D13[Upload contract to S3\nUpdate Rental.contractUrl]
+  D13 --> D14[Email Buyer: contract PDF via SendGrid]
+  D14 --> D15[Notify Seller — new rental]
+  D15 --> D16{Seller confirms?}
+  D16 -- No --> D17[Rental CANCELLED\nFree calendar dates\nStripe refund issued]
+  D17 --> End2([🔴 End])
+  D16 -- Yes --> D18[Rental CONFIRMED\nstatus: ACTIVE on start date]
+  D18 --> D19{Equipment returned on time?}
+  D19 -- Yes --> D20[Mark RETURNED in PostgreSQL]
+  D20 --> D21{Any damage?}
+  D21 -- No --> D22[Stripe refund depositAmount ✅]
+  D22 --> D23[Free calendar dates]
+  D23 --> End3([🔴 End])
+  D21 -- Yes --> D24[Deposit withheld\nDispute can be opened]
+  D24 --> End4([🔴 End])
+  D19 -- No → Overdue --> D25[Status OVERDUE\nNotify Buyer & Seller via SendGrid]
+  D25 --> D26[Apply daily overdue penalty]
+  D26 --> D19
 ```
 
 ---
 
-## Activity 5 — Admin Store & Product Moderation
+## Activity 5 — Admin KYC Moderation
 
 ```mermaid
 flowchart TD
-  Start([🟢 Start]) --> E1[Admin logs into Admin Dashboard]
-  E1 --> E2[View pending stores & products count]
+  Start([🟢 Start]) --> E1[Admin logs into Admin Dashboard\nRole Guard: SUPER_ADMIN only]
+  E1 --> E2[View pending count:\nstores + products awaiting review]
   E2 --> E3{What to moderate?}
-  
-  E3 -- Store --> E4[Open pending store application]
-  E4 --> E5[Review seller info & documents]
-  E5 --> E6[Download & verify legal documents]
-  E6 --> E7{Documents valid?}
-  E7 -- No --> E8[Reject store with reason]
-  E8 --> E9[Seller notified — must resubmit]
+
+  E3 -- Store KYC --> E4[Open pending store application]
+  E4 --> E5[Review seller info in PostgreSQL]
+  E5 --> E6[Download KYC documents from S3\nRC, tax, health license]
+  E6 --> E7{Documents valid\nand complete?}
+  E7 -- No --> E8[Reject store with written reason]
+  E8 --> E9[Email Seller via SendGrid\n rejection reason]
   E9 --> End1([🔴 End])
-  E7 -- Yes --> E10[Approve store]
-  E10 --> E11[Store.isVerified = true]
-  E11 --> E12[Seller notified — can list products]
-  E12 --> End2([🔴 End])
-  
-  E3 -- Product --> E13[Open pending product]
-  E13 --> E14[Review product details, images, pricing]
-  E14 --> E15{Product compliant?}
-  E15 -- No --> E16[Reject product with reason]
-  E16 --> E17[Seller notified — must edit & resubmit]
+  E7 -- Yes --> E10[Approve store in PostgreSQL\nisVerified: true\nverificationStatus: APPROVED]
+  E10 --> E11[Email Seller — "Store approved ✅"]
+  E11 --> End2([🔴 End])
+
+  E3 -- Product --> E12[Open pending product\nstatus: PENDING_REVIEW]
+  E12 --> E13[Review details, images from S3]
+  E13 --> E14[Check certifications PDF\nCE / FDA from S3]
+  E14 --> E15{Product compliant\nand safe?}
+  E15 -- No --> E16[Reject product\nstatus: REJECTED]
+  E16 --> E17[Email Seller via SendGrid]
   E17 --> End3([🔴 End])
-  E15 -- Yes --> E18[Approve product]
-  E18 --> E19[Product.status = ACTIVE]
-  E19 --> E20[Product visible on catalog]
-  E20 --> End4([🔴 End])
+  E15 -- Yes --> E18[Approve product\nstatus: ACTIVE in PostgreSQL]
+  E18 --> E19[Product visible on catalog ✅]
+  E19 --> End4([🔴 End])
 ```
 
 ---
 
-## Activity 6 — Dispute Opening & Resolution
+## Activity 6 — Dispute & Refund via Stripe
 
 ```mermaid
 flowchart TD
   Start([🟢 Start]) --> F1[Buyer has issue with order or rental]
-  F1 --> F2[Navigate to dispute section]
-  F2 --> F3[Select order / rental]
-  F3 --> F4[Describe issue — subject & description]
+  F1 --> F2[Navigate to Disputes section]
+  F2 --> F3[Select related order or rental]
+  F3 --> F4[Describe issue: subject + description]
   F4 --> F5[Submit dispute]
-  F5 --> F6[Dispute created — status: OPEN]
-  F6 --> F7[Admin & Seller notified]
+  F5 --> F6[Dispute created in PostgreSQL\nstatus: OPEN]
+  F6 --> F7[Email Admin & Seller via SendGrid]
   F7 --> F8[Seller responds with evidence]
-  F8 --> F9[Buyer adds more info if needed]
-  F9 --> F10[Admin reviews all messages]
-  F10 --> F11[Status → UNDER_REVIEW]
-  F11 --> F12{Admin decision?}
-  F12 -- In favor of Buyer --> F13[Issue refund to Buyer]
-  F13 --> F14[Dispute RESOLVED]
-  F12 -- In favor of Seller --> F15[Release funds to Seller]
-  F15 --> F14
-  F12 -- Close without resolution --> F16[Dispute CLOSED]
-  F14 --> F17[Both parties notified of outcome]
-  F16 --> F17
-  F17 --> End([🔴 End])
+  F8 --> F9[Admin reviews all messages]
+  F9 --> F10[Status → UNDER_REVIEW in PostgreSQL]
+  F10 --> F11{Admin decision?}
+  F11 -- Favor Buyer --> F12[Issue Stripe refund to Buyer]
+  F12 --> F13[Dispute RESOLVED in PostgreSQL]
+  F11 -- Favor Seller --> F14[Release funds to Seller wallet]
+  F14 --> F13
+  F11 -- Close without resolution --> F15[Dispute CLOSED]
+  F13 --> F16[Email both parties via SendGrid]
+  F15 --> F16
+  F16 --> End([🔴 End])
 ```
 
 ---
@@ -212,48 +219,56 @@ flowchart TD
 ```mermaid
 flowchart TD
   Start([🟢 Start]) --> G1[Seller views wallet dashboard]
-  G1 --> G2[Check available balance]
-  G2 --> G3{Sufficient balance?}
-  G3 -- No --> G4[Wait for order deliveries to release funds]
+  G1 --> G2[Fetch balance from PostgreSQL]
+  G2 --> G3{Available balance > 0?}
+  G3 -- No --> G4[Wait for delivery confirmations\nto release pendingBalance]
   G4 --> End1([🔴 End])
   G3 -- Yes --> G5[Click Request Withdrawal]
-  G5 --> G6[Enter amount & bank details]
-  G6 --> G7{Amount <= wallet balance?}
+  G5 --> G6[Enter amount + bank details]
+  G6 --> G7{Amount ≤ wallet.balance\nin PostgreSQL?}
   G7 -- No --> G8[Show error — insufficient funds]
   G8 --> G6
-  G7 -- Yes --> G9[Deduct from wallet.balance]
-  G9 --> G10[Create Withdrawal record — PENDING]
-  G10 --> G11[Create Transaction — WITHDRAWAL, PENDING]
-  G11 --> G12[Notify Admin]
+  G7 -- Yes --> G9[Deduct from wallet.balance in PostgreSQL]
+  G9 --> G10[Create Withdrawal record\nstatus: PENDING]
+  G10 --> G11[Create Transaction\ntype: WITHDRAWAL, status: PENDING]
+  G11 --> G12[Email Admin via SendGrid\nnew withdrawal pending]
   G12 --> G13{Admin reviews}
-  G13 -- Approved --> G14[Process bank transfer]
+  G13 -- Approved --> G14[Admin processes bank transfer\noutside platform]
   G14 --> G15[Withdrawal.status = COMPLETED]
-  G15 --> G16[Notify Seller — funds transferred ✅]
+  G15 --> G16[Email Seller via SendGrid ✅]
   G16 --> End2([🔴 End])
-  G13 -- Rejected --> G17[Restore wallet.balance]
-  G17 --> G18[Notify Seller with rejection reason]
+  G13 -- Rejected --> G17[Restore wallet.balance in PostgreSQL]
+  G17 --> G18[Email Seller: rejection reason]
   G18 --> End3([🔴 End])
 ```
 
 ---
 
-## Activity 8 — JWT Token Refresh & Session Management
+## Activity 8 — Secure Login with Rate Limiting
 
 ```mermaid
 flowchart TD
-  Start([🟢 Start]) --> H1[User makes API request]
-  H1 --> H2{AccessToken valid?}
-  H2 -- Yes --> H3[Process request normally ✅]
-  H3 --> End1([🔴 End])
-  H2 -- Expired --> H4[Frontend detects 401 error]
-  H4 --> H5[Send refreshToken to POST /auth/refresh]
-  H5 --> H6{RefreshToken valid?}
-  H6 -- Yes --> H7[Generate new accessToken]
-  H7 --> H8[Rotate refreshToken]
-  H8 --> H9[Update stored tokens in browser]
-  H9 --> H10[Retry original API request]
-  H10 --> H3
-  H6 -- Expired / Invalid --> H11[Clear all tokens from browser]
-  H11 --> H12[Redirect user to Login page]
-  H12 --> End2([🔴 End])
+  Start([🟢 Start]) --> H1[User submits login form]
+  H1 --> H2[class-validator sanitizes inputs]
+  H2 --> H3[Check Rate Limit in Redis\nfor this IP address]
+  H3 --> H4{Attempts > 5\nin last 15 minutes?}
+  H4 -- Yes --> H5[Return 429 Too Many Requests]
+  H5 --> H6[Show lockout message to user]
+  H6 --> End1([🔴 End])
+  H4 -- No --> H7[Find User by email in PostgreSQL]
+  H7 --> H8{User found?}
+  H8 -- No --> H9[Increment Redis fail counter\nReturn 401]
+  H9 --> End2([🔴 End])
+  H8 -- Yes --> H10{bcrypt.compare\npassword vs hash}
+  H10 -- Wrong --> H11[Increment Redis fail counter\nReturn 401]
+  H11 --> End3([🔴 End])
+  H10 -- Correct --> H12[Reset Redis fail counter]
+  H12 --> H13[Sign accessToken 15min]
+  H13 --> H14[Sign refreshToken 7 days]
+  H14 --> H15[Save bcrypt refreshToken\nin PostgreSQL]
+  H15 --> H16[Set-Cookie: refreshToken\nHttpOnly + Secure + SameSite=Strict]
+  H16 --> H17[Return accessToken in response body]
+  H17 --> H18[Store accessToken in memory\nnot localStorage — XSS safe]
+  H18 --> H19[Redirect to Dashboard ✅]
+  H19 --> End4([🔴 End])
 ```
